@@ -1,7 +1,18 @@
+"""
+AutoHound — Attack Path Intelligence Engine
+Copyright (c) 2026 Gordon Prescott. All rights reserved.
+
+ACH Research Division
+Unauthorized copying, distribution, or modification of this software
+without explicit written permission from Gordon Prescott is prohibited.
+
+This tool is intended exclusively for authorized security research 
+and penetration testing engagements with written scope of work.
+"""
 """Tests for data models."""
 
 import pytest
-from bloodhound_ai.models import (
+from autohound.models import (
     Node, Edge, Graph, NodeType, EdgeType, AttackPath, AttackStep
 )
 

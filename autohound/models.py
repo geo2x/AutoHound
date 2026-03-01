@@ -1,5 +1,7 @@
+﻿# AutoHound © 2026 Gordon Prescott
+
 """
-Data models for BloodHound AI graph representation.
+Data models for AutoHound graph representation.
 
 These models represent Active Directory objects and relationships extracted from BloodHound.
 """

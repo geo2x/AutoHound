@@ -1,16 +1,16 @@
-﻿# BloodHound AI Project Setup Script
-# Run this from C:\Users\gordo\Projects\BloodHound-AI
+# AutoHound Project Setup Script
+# AutoHound Setup Script - Run from project root directory
 
-Write-Host "Setting up BloodHound AI project structure..." -ForegroundColor Cyan
+Write-Host "Setting up AutoHound project structure..." -ForegroundColor Cyan
 
 # Create directory structure
 $dirs = @(
-    "bloodhound_ai",
-    "bloodhound_ai/ingestor",
-    "bloodhound_ai/serializer", 
-    "bloodhound_ai/reasoning",
-    "bloodhound_ai/reporting",
-    "bloodhound_ai/utils",
+    "autohound",
+    "autohound/ingestor",
+    "autohound/serializer", 
+    "autohound/reasoning",
+    "autohound/reporting",
+    "autohound/utils",
     "tests",
     "tests/fixtures",
     "docs",
@@ -19,7 +19,7 @@ $dirs = @(
 
 foreach ($dir in $dirs) {
     New-Item -Path $dir -ItemType Directory -Force | Out-Null
-    Write-Host "✓ Created $dir" -ForegroundColor Green
+    Write-Host "? Created $dir" -ForegroundColor Green
 }
 
 Write-Host "

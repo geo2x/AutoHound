@@ -1,3 +1,5 @@
+﻿# AutoHound © 2026 Gordon Prescott
+
 """
 JSON file ingestor for BloodHound export data.
 
@@ -10,7 +12,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from bloodhound_ai.models import (
+from autohound.models import (
     Graph, Node, Edge, NodeType, EdgeType
 )
 

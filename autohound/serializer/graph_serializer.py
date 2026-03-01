@@ -1,3 +1,5 @@
+﻿# AutoHound © 2026 Gordon Prescott
+
 """
 Graph serializer - converts AD graph to LLM-optimized text representation.
 
@@ -9,7 +11,7 @@ import json
 import logging
 from typing import Dict, List, Set
 
-from bloodhound_ai.models import Graph, Node, Edge, NodeType, EdgeType
+from autohound.models import Graph, Node, Edge, NodeType, EdgeType
 
 logger = logging.getLogger(__name__)
 

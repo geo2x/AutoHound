@@ -3,16 +3,16 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bloodhound-ai"
+name = "autohound"
 version = "0.1.0"
-description = "Active Directory Attack Path Intelligence Engine - LLM-powered BloodHound analysis"
+description = "AutoHound - Active Directory Attack Path Intelligence Engine"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Gordon P.", email = "gordon.j.prescott23@gmail.com"}
 ]
-keywords = ["security", "active-directory", "penetration-testing", "red-team", "bloodhound", "llm"]
+keywords = ["security", "active-directory", "penetration-testing", "red-team", "autohound", "llm", "ach"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Information Technology",
@@ -43,16 +43,16 @@ dev = [
 ]
 
 [project.scripts]
-bloodhound-ai = "bloodhound_ai.cli:main"
+autohound = "autohound.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/bloodhound-ai"
-Repository = "https://github.com/yourusername/bloodhound-ai"
-Issues = "https://github.com/yourusername/bloodhound-ai/issues"
+Homepage = "https://github.com/geo2x/AutoHound"
+Repository = "https://github.com/geo2x/AutoHound"
+Issues = "https://github.com/geo2x/AutoHound/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["bloodhound_ai*"]
+include = ["autohound*"]
 
 [tool.black]
 line-length = 100
@@ -74,4 +74,4 @@ testpaths = ["tests"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
-addopts = "-v --cov=bloodhound_ai --cov-report=term-missing"
+addopts = "-v --cov=autohound --cov-report=term-missing"

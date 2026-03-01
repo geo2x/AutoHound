@@ -1,33 +1,135 @@
-MIT License
+AutoHound License Agreement
+Copyright (c) 2026 Gordon Prescott. All rights reserved.
 
-Copyright (c) 2026 [Your Name]
+ACH Research Division Original Work
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+═══════════════════════════════════════════════════════════════════════════════
+1. DEFINITIONS
+═══════════════════════════════════════════════════════════════════════════════
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+"AutoHound" refers to the software, documentation, and associated materials 
+contained in this repository.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+"Author" refers to Gordon Prescott, the sole creator and copyright holder.
 
----
+"ACH Research Division" refers to the research entity under which this work 
+was developed.
 
-ETHICAL USE NOTICE:
+"You" refers to any individual or entity obtaining a copy of AutoHound.
 
-This software is designed exclusively for authorized security research and
-testing in controlled lab environments. Users must obtain explicit written
-authorization before analyzing any Active Directory environment.
+═══════════════════════════════════════════════════════════════════════════════
+2. GRANT OF LICENSE
+═══════════════════════════════════════════════════════════════════════════════
 
-Unauthorized use may violate applicable laws including the Computer Fraud and
-Abuse Act (CFAA) and equivalent statutes. The author assumes no liability for
-misuse of this software.
+Subject to the terms and conditions of this license, Gordon Prescott grants You 
+a limited, non-exclusive, non-transferable, revocable license to:
+
+(a) Use AutoHound for personal, educational, and authorized security research 
+    purposes;
+(b) Use AutoHound in authorized penetration testing engagements where You have 
+    explicit written permission from the target organization;
+(c) Study the source code for educational purposes.
+
+═══════════════════════════════════════════════════════════════════════════════
+3. RESTRICTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+You MAY NOT, without prior written permission from Gordon Prescott:
+
+(a) Use AutoHound for commercial purposes, including but not limited to:
+    - Providing AutoHound as a service to clients
+    - Incorporating AutoHound into commercial security products
+    - Using AutoHound in commercial security assessments without attribution
+
+(b) Redistribute, sublicense, or make AutoHound available to third parties in 
+    any form, including but not limited to:
+    - Hosting AutoHound on public repositories under a different name
+    - Including AutoHound in software distributions
+    - Offering AutoHound downloads through third-party channels
+
+(c) Modify AutoHound and redistribute the modified version under a different 
+    name or branding without explicit attribution to Gordon Prescott and 
+    ACH Research Division.
+
+(d) Remove, alter, or obscure any copyright notices, author attribution, or 
+    license information contained in AutoHound.
+
+═══════════════════════════════════════════════════════════════════════════════
+4. ATTRIBUTION REQUIREMENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+If You create derivative works, modifications, or use AutoHound in published 
+research, You MUST:
+
+(a) Clearly attribute AutoHound to Gordon Prescott and ACH Research Division;
+(b) Include the following notice in any documentation or publication:
+    "Based on AutoHound by Gordon Prescott (ACH Research Division)"
+(c) Provide a link to the original repository: 
+    https://github.com/geo2x/AutoHound
+
+═══════════════════════════════════════════════════════════════════════════════
+5. AUTHORIZED USE ONLY
+═══════════════════════════════════════════════════════════════════════════════
+
+AutoHound is intended EXCLUSIVELY for authorized security testing. You agree:
+
+(a) To use AutoHound only against systems for which You have explicit written 
+    authorization;
+(b) To comply with all applicable laws, including but not limited to the 
+    Computer Fraud and Abuse Act (CFAA) and equivalent international statutes;
+(c) That unauthorized use may result in criminal prosecution and civil liability.
+
+═══════════════════════════════════════════════════════════════════════════════
+6. NO WARRANTY
+═══════════════════════════════════════════════════════════════════════════════
+
+AutoHound is provided "AS IS" without warranty of any kind, express or implied, 
+including but not limited to the warranties of merchantability, fitness for a 
+particular purpose, and noninfringement.
+
+Gordon Prescott does not warrant that:
+(a) AutoHound will meet Your requirements;
+(b) AutoHound will be uninterrupted, secure, or error-free;
+(c) The results obtained from AutoHound will be accurate or reliable.
+
+═══════════════════════════════════════════════════════════════════════════════
+7. LIMITATION OF LIABILITY
+═══════════════════════════════════════════════════════════════════════════════
+
+In no event shall Gordon Prescott or ACH Research Division be liable for any 
+direct, indirect, incidental, special, exemplary, or consequential damages 
+(including but not limited to procurement of substitute goods or services, 
+loss of use, data, or profits, or business interruption) arising from the use 
+of AutoHound, even if advised of the possibility of such damage.
+
+═══════════════════════════════════════════════════════════════════════════════
+8. DMCA NOTICE
+═══════════════════════════════════════════════════════════════════════════════
+
+AutoHound is an original work protected by copyright law. Unauthorized 
+reproduction, distribution, or creation of derivative works may be subject to 
+DMCA takedown and legal action.
+
+To report copyright infringement, contact: gordon.j.prescott23@gmail.com
+
+═══════════════════════════════════════════════════════════════════════════════
+9. TERMINATION
+═══════════════════════════════════════════════════════════════════════════════
+
+This license is automatically terminated if You fail to comply with any term 
+herein. Upon termination, You must cease all use of AutoHound and destroy all 
+copies in Your possession.
+
+═══════════════════════════════════════════════════════════════════════════════
+10. GOVERNING LAW
+═══════════════════════════════════════════════════════════════════════════════
+
+This license shall be governed by and construed in accordance with the laws 
+of the United States, without regard to conflict of law principles.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+AutoHound is an original work by Gordon Prescott.
+ACH Research Division — 2026
+
+For commercial licensing inquiries: gordon.j.prescott23@gmail.com

@@ -1,5 +1,7 @@
+﻿# AutoHound © 2026 Gordon Prescott
+
 """
-Markdown report generator for BloodHound AI analysis results.
+Markdown report generator for AutoHound analysis results.
 
 Generates professional, GitHub-compatible reports with attack paths,
 commands, ATT&CK mappings, and defensive guidance.
@@ -10,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List
 
-from bloodhound_ai.models import AttackPath, Graph
+from autohound.models import AttackPath, Graph
 
 logger = logging.getLogger(__name__)
 
@@ -58,10 +60,10 @@ class MarkdownReportGenerator:
     
     def _generate_header(self) -> str:
         """Generate report header."""
-        return f"""# BloodHound AI - Attack Path Analysis Report
+        return f"""# AutoHound - Attack Path Analysis Report
 
 **Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  
-**Tool:** BloodHound AI v0.1  
+**Tool:** AutoHound v0.1  
 **Classification:** TLP:WHITE - Authorized Research Only
 
 ---
@@ -88,7 +90,7 @@ No exploitable attack paths were identified in this environment.
         
         summary = f"""## Executive Summary
 
-BloodHound AI identified **{len(self.attack_paths)} attack path(s)** in the analyzed Active Directory environment.
+AutoHound identified **{len(self.attack_paths)} attack path(s)** in the analyzed Active Directory environment.
 
 ### Key Findings
 
@@ -306,7 +308,7 @@ Deploy the following detection rules to identify exploitation attempts:
 
 ### Tool Information
 
-**BloodHound AI** is an open-source research tool for automated Active Directory attack path analysis.
+**AutoHound** is an open-source research tool for automated Active Directory attack path analysis.
 
 - GitHub: [Your Repository URL]
 - License: MIT

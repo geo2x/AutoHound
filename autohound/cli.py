@@ -1,5 +1,7 @@
+﻿# AutoHound © 2026 Gordon Prescott
+
 """
-Command-line interface for BloodHound AI.
+Command-line interface for AutoHound.
 
 Main entry point for the tool.
 """
@@ -12,32 +14,35 @@ from typing import Optional
 import click
 from dotenv import load_dotenv
 
-from bloodhound_ai import __version__
-from bloodhound_ai.ingestor import Neo4jIngestor, JsonIngestor
-from bloodhound_ai.serializer import GraphSerializer
-from bloodhound_ai.reasoning import LLMEngine
-from bloodhound_ai.reporting import MarkdownReportGenerator, AttackNavigatorGenerator
-from bloodhound_ai.utils import setup_logging
+from autohound import __version__
+from autohound.ingestor import Neo4jIngestor, JsonIngestor
+from autohound.serializer import GraphSerializer
+from autohound.reasoning import LLMEngine
+from autohound.reporting import MarkdownReportGenerator, AttackNavigatorGenerator
+from autohound.utils import setup_logging
 
 logger = logging.getLogger(__name__)
 
 
 BANNER = f"""
+    ___   ________  __
+   /   | / ____/ / / /
+  / /| |/ /   / /_/ / 
+ / ___ / /___/ __  /  
+/_/  |_\____/_/ /_/   v{__version__}
+                      
 ╔══════════════════════════════════════════════════════════════╗
+║  AutoHound - Active Directory Attack Path Intelligence  ║
+║  [ACH] Automated Compromise Hunter                          ║
 ║                                                              ║
-║   ██████╗ ██╗      ██████╗  ██████╗ ██████╗ ██╗  ██╗       ║
-║   ██╔══██╗██║     ██╔═══██╗██╔═══██╗██╔══██╗██║  ██║       ║
-║   ██████╔╝██║     ██║   ██║██║   ██║██║  ██║███████║       ║
-║   ██╔══██╗██║     ██║   ██║██║   ██║██║  ██║██╔══██║       ║
-║   ██████╔╝███████╗╚██████╔╝╚██████╔╝██████╔╝██║  ██║       ║
-║   ╚═════╝ ╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝ ╚═╝  ╚═╝       ║
+║  > Analyzing graph relationships...                         ║
+║  > Identifying privilege escalation vectors...              ║
+║  > Mapping attack paths to Domain Admin...                  ║
 ║                                                              ║
-║              Active Directory Attack Path AI                 ║
-║                       Version {__version__}                        ║
-║                                                              ║
-║   TLP:WHITE - Authorized Research & Lab Use Only            ║
-║                                                              ║
+║  ⚠️  TLP:WHITE - Authorized Testing Only                    ║
 ╚══════════════════════════════════════════════════════════════╝
+
+[*] Initializing ACH module...
 """
 
 
@@ -98,20 +103,20 @@ def main(
     log_level: str
 ) -> None:
     """
-    BloodHound AI - Active Directory Attack Path Intelligence Engine
+    AutoHound - Active Directory Attack Path Intelligence Engine
     
     Analyze BloodHound data to discover novel attack paths with LLM reasoning.
     
     Examples:
     
         # Analyze BloodHound JSON export
-        bloodhound-ai --input ./bloodhound_export.json --output ./reports
+        autohound --input ./bloodhound_export.json --output ./reports
         
         # Analyze from Neo4j database
-        bloodhound-ai --neo4j-uri bolt://localhost:7687 --neo4j-password pass --output ./reports
+        autohound --neo4j-uri bolt://localhost:7687 --neo4j-password pass --output ./reports
         
         # Use specific Claude model
-        bloodhound-ai --input data.json --model claude-sonnet-4-20250514
+        autohound --input data.json --model claude-sonnet-4-20250514
     """
     # Load environment variables
     load_dotenv()
@@ -176,7 +181,7 @@ def main(
         output_path.mkdir(parents=True, exist_ok=True)
         
         # Markdown report
-        report_file = output_path / "bloodhound_ai_report.md"
+        report_file = output_path / "autohound_report.md"
         report_gen = MarkdownReportGenerator(graph, attack_paths)
         report_gen.generate(report_file)
         

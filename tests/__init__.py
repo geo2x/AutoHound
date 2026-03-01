@@ -1,1 +1,1 @@
-"""Test suite for BloodHound AI."""
+"""Test suite for AutoHound."""

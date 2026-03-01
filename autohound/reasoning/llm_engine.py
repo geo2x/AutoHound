@@ -1,3 +1,5 @@
+﻿# AutoHound © 2026 Gordon Prescott
+
 """
 LLM reasoning engine using Claude API.
 
@@ -12,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 from anthropic import Anthropic
 
-from bloodhound_ai.models import AttackPath, AttackStep, EdgeType
+from autohound.models import AttackPath, AttackStep, EdgeType
 
 logger = logging.getLogger(__name__)
 

@@ -1,3 +1,5 @@
+﻿# AutoHound © 2026 Gordon Prescott
+
 """
 Neo4j database ingestor for BloodHound data.
 
@@ -10,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 from neo4j import GraphDatabase, Driver, Session
 
-from bloodhound_ai.models import (
+from autohound.models import (
     Graph, Node, Edge, NodeType, EdgeType
 )
 

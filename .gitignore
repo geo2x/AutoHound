@@ -62,3 +62,8 @@ reports/
 # OS
 .DS_Store
 Thumbs.db
+
+# Installer
+installer/node_modules/
+installer/dist/
+installer/.cache/

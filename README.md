@@ -1,4 +1,4 @@
-# BloodHound AI
+# AutoHound
 
 **Active Directory Attack Path Intelligence Engine**
 
@@ -6,9 +6,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TLP:WHITE](https://img.shields.io/badge/TLP-WHITE-white.svg)](https://www.cisa.gov/tlp)
 
-BloodHound AI is an open-source offensive security research tool that augments [BloodHound Community Edition](https://github.com/SpecterOps/BloodHound) with a large language model (LLM) reasoning layer. It automatically analyzes Active Directory relationship graphs, surfaces non-obvious attack paths that standard queries miss, and generates executable command sequences mapped to MITRE ATT&CK.
+AutoHound is an open-source offensive security research tool that augments [BloodHound Community Edition](https://github.com/SpecterOps/BloodHound) with a large language model (LLM) reasoning layer. It automatically analyzes Active Directory relationship graphs, surfaces non-obvious attack paths that standard queries miss, and generates executable command sequences mapped to MITRE ATT&CK.
 
-![BloodHound AI Workflow](docs/workflow.png)
+![AutoHound Workflow](docs/workflow.png)
 
 ## 🎯 Key Features
 
@@ -23,7 +23,7 @@ BloodHound AI is an open-source offensive security research tool that augments [
 
 **READ THIS BEFORE USING THIS TOOL**
 
-BloodHound AI is designed **exclusively** for use in:
+AutoHound is designed **exclusively** for use in:
 
 - ✅ Your own intentionally vulnerable Active Directory lab
 - ✅ GOAD ([Game of Active Directory](https://github.com/Orange-Cyberdefense/GOAD)) or equivalent authorized test environments
@@ -57,8 +57,8 @@ It operates **exclusively** on pre-collected BloodHound JSON data or a local Neo
 
 ```powershell
 # Clone the repository
-git clone https://github.com/yourusername/bloodhound-ai.git
-cd bloodhound-ai
+git clone https://github.com/geo2x/autohound.git
+cd autohound
 
 # Create virtual environment
 python -m venv venv
@@ -79,13 +79,13 @@ cp .env.example .env
 
 ```powershell
 # Analyze BloodHound JSON export
-bloodhound-ai --input ./bloodhound_export.json --output ./reports
+autohound --input ./bloodhound_export.json --output ./reports
 
 # Analyze from Neo4j database
-bloodhound-ai --neo4j-uri bolt://localhost:7687 --neo4j-password yourpass --output ./reports
+autohound --neo4j-uri bolt://localhost:7687 --neo4j-password yourpass --output ./reports
 
 # Use specific Claude model
-bloodhound-ai --input data.json --model claude-sonnet-4-20250514
+autohound --input data.json --model claude-sonnet-4-20250514
 ```
 
 ### Example Output
@@ -100,7 +100,7 @@ bloodhound-ai --input data.json --model claude-sonnet-4-20250514
 [+] Discovered 3 attack path(s)
 
 [+] Reports generated:
-    - Markdown Report: ./reports/bloodhound_ai_report.md
+    - Markdown Report: ./reports/autohound_report.md
     - ATT&CK Navigator: ./reports/attack_navigator_layer.json
 
 TOP ATTACK PATHS:
@@ -120,8 +120,8 @@ TOP ATTACK PATHS:
 ### Project Structure
 
 ```
-bloodhound-ai/
-├── bloodhound_ai/
+autohound/
+├── autohound/
 │   ├── ingestor/          # Neo4j & JSON data ingestion
 │   ├── serializer/        # Graph to LLM-optimized text
 │   ├── reasoning/         # LLM reasoning engine
@@ -144,7 +144,7 @@ bloodhound-ai/
 ### Command Reference
 
 ```powershell
-bloodhound-ai [OPTIONS]
+autohound [OPTIONS]
 
 Options:
   -i, --input PATH              Path to BloodHound JSON export (required)
@@ -167,7 +167,7 @@ Options:
 pytest
 
 # With coverage
-pytest --cov=bloodhound_ai --cov-report=html
+pytest --cov=autohound --cov-report=html
 
 # Run specific test
 pytest tests/test_models.py -v
@@ -185,7 +185,7 @@ git clone https://github.com/Orange-Cyberdefense/GOAD
 cd GOAD
 
 # Follow installation instructions in GOAD README
-# Collect BloodHound data and analyze with BloodHound AI
+# Collect BloodHound data and analyze with AutoHound
 ```
 
 ### Option 2: Custom Lab
@@ -231,11 +231,33 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-**Author:** [Your Name]  
-**GitHub:** [@yourusername](https://github.com/yourusername)  
-**Purpose:** Portfolio project for DOD/Federal cybersecurity roles
+**Author:** Gordon P.  
+**Security Researcher** | Google Cybersecurity Certified | CompTIA CySA+ (In Progress)  
+**GitHub:** [@geo2x](https://github.com/geo2x)  
+**Email:** gordon.j.prescott23@gmail.com
+
+**Background:** Self-taught security researcher with hands-on experience in penetration testing, malware analysis, and Active Directory exploitation. Building this project to demonstrate offensive security automation capabilities for junior to mid-level red team positions.
+
+**Target Role:** Red Team Operator / Penetration Tester specializing in Active Directory environments
 
 ---
 
-**BloodHound AI** - Bringing LLM reasoning to Active Directory attack path analysis  
+**AutoHound** - Bringing LLM reasoning to Active Directory attack path analysis  
 **TLP:WHITE** - Authorized Research Only
+
+---
+
+## 📜 Copyright & License
+
+© 2026 Gordon Prescott — ACH Research Division. All rights reserved.
+
+AutoHound is an original work by Gordon Prescott. This software is licensed 
+under a custom restrictive license that permits personal and authorized research 
+use only. Commercial use, redistribution, or modification without attribution 
+requires written permission from Gordon Prescott.
+
+**Unauthorized reproduction or redistribution is prohibited.**
+
+For commercial licensing inquiries: gordon.j.prescott23@gmail.com
+
+See [LICENSE](LICENSE) for full terms.

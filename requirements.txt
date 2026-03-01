@@ -1,4 +1,4 @@
-# BloodHound AI - Python Dependencies
+# AutoHound - Python Dependencies
 # Active Directory Attack Path Intelligence Engine
 
 # Core Dependencies

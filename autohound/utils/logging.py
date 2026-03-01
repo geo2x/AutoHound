@@ -1,4 +1,6 @@
-"""Logging configuration for BloodHound AI."""
+﻿# AutoHound © 2026 Gordon Prescott
+
+"""Logging configuration for AutoHound."""
 
 import logging
 import sys

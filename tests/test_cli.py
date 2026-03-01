@@ -1,8 +1,19 @@
+"""
+AutoHound — Attack Path Intelligence Engine
+Copyright (c) 2026 Gordon Prescott. All rights reserved.
+
+ACH Research Division
+Unauthorized copying, distribution, or modification of this software
+without explicit written permission from Gordon Prescott is prohibited.
+
+This tool is intended exclusively for authorized security research 
+and penetration testing engagements with written scope of work.
+"""
 """Tests for CLI interface."""
 
 import pytest
 from click.testing import CliRunner
-from bloodhound_ai.cli import main
+from autohound.cli import main
 
 
 def test_cli_help():
@@ -11,7 +22,7 @@ def test_cli_help():
     result = runner.invoke(main, ['--help'])
     
     assert result.exit_code == 0
-    assert 'BloodHound AI' in result.output
+    assert 'AutoHound' in result.output
     assert '--input' in result.output
     assert '--output' in result.output
 
