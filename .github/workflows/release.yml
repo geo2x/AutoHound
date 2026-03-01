@@ -65,78 +65,36 @@ jobs:
           }
         shell: pwsh
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2.0.4
-        with:
-          name: AutoHound ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-          make_latest: true
-          body: |
-            <div align="center">
-              <img src="https://raw.githubusercontent.com/geo2x/AutoHound/main/assets/autohound_small.png" width="120">
-              
-              # AutoHound ${{ github.ref_name }}
-              ### AI-Powered Active Directory Attack Path Analysis
-              *by ACH Research Division*
-            </div>
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ github.ref_name }} \
+            dist/AutoHound.exe \
+            installer/dist/AutoHound_Setup.exe \
+            --title "AutoHound ${{ github.ref_name }}" \
+            --latest \
+            --notes "## AutoHound ${{ github.ref_name }}
 
-            ---
+          AI-Powered Active Directory Attack Path Analysis by ACH Research Division.
 
-            ## What is AutoHound?
+          ### Downloads
+          | File | Description |
+          |------|-------------|
+          | AutoHound_Setup.exe | Full GUI installer — recommended |
+          | AutoHound.exe | CLI standalone |
 
-            AutoHound ingests BloodHound CE graph data and uses Claude AI to automatically discover, score, and explain attack paths through your Active Directory environment. It finds what human analysts miss.
+          ### Requirements
+          - Windows 10/11 x64
+          - Docker Desktop
+          - Anthropic API key (console.anthropic.com)
 
-            ---
+          ### Quick Start
+          1. Run AutoHound_Setup.exe
+          2. Enter your Anthropic API key
+          3. Open http://localhost:8080
 
-            ## ⬇️ Download
+          BloodHound CE default login: username admin, password shown in installer terminal output.
 
-            | File | Description | Use this if... |
-            |------|-------------|----------------|
-            | **AutoHound_Setup.exe** | Full GUI installer | You are new to AutoHound |
-            | **AutoHound.exe** | CLI standalone | You already have BloodHound CE running |
-
-            ---
-
-            ## 🚀 Quick Start (GUI Installer)
-
-            1. Download `AutoHound_Setup.exe`
-            2. Run the installer — it handles everything
-            3. Enter your [Anthropic API key](https://console.anthropic.com)
-            4. Open BloodHound CE at http://localhost:8080
-            5. Run SharpHound to collect AD data
-            6. Run AutoHound on the output:
-            ```bash
-            autohound --input ./bloodhound_data/ --output ./reports/
-            ```
-
-            ---
-
-            ## 🔧 Requirements
-
-            - Windows 10 or 11 (x64)
-            - Docker Desktop
-            - Anthropic API key (get one at console.anthropic.com)
-            - BloodHound CE (installer sets this up automatically)
-
-            ---
-
-            ## 🔑 BloodHound CE First Login
-
-            After installation BloodHound CE generates a random admin password.
-            Check the installer terminal output for your credentials.
-            Username is always: `admin`
-
-            ---
-
-            ## ⚠️ Legal
-
-            AutoHound is for authorized security testing only.
-            Use only on systems you own or have explicit written permission to test.
-
-            ---
-
-            © 2026 Gordon Prescott — ACH Research Division. All rights reserved.
-          files: |
-            dist/AutoHound.exe
-            installer/dist/AutoHound_Setup.exe
+          ---
+          © 2026 Gordon Prescott — ACH Research Division. All rights reserved."
