@@ -31,10 +31,21 @@ jobs:
       
       - name: Build standalone exe
         run: |
-          pyinstaller --onefile --name AutoHound --console autohound/cli.py
+          pyinstaller --onefile --name AutoHound --icon assets/autohound.ico autohound/cli.py
       
       - name: Build Python packages
         run: python -m build
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Build Electron installer
+        run: |
+          cd installer
+          npm ci
+          npm run build
       
       - name: Create source archive
         run: |
@@ -65,9 +76,20 @@ jobs:
             **requirements**
             - Anthropic API key (get at console.anthropic.com)
             - BloodHound JSON export from SharpHound
-            - Python 3.11+ (for source install)
+            - Docker Desktop (for BloodHound CE)
+            - Python 3.11+
             
-            **quickstart — windows exe**
+            **quickstart — gui installer (recommended)**
+            ```powershell
+            # download AutoHound Setup (latest version).exe
+            # run installer - it will:
+            #   - verify system requirements
+            #   - start BloodHound CE containers
+            #   - install AutoHound CLI
+            #   - create desktop shortcuts
+            ```
+            
+            **quickstart — windows cli**
             ```powershell
             # download AutoHound-${{ github.ref_name }}-windows-x64.exe
             # create .env file with: ANTHROPIC_API_KEY=your_key
@@ -93,9 +115,11 @@ jobs:
             © 2026 Gordon Prescott — ACH Research Division
           files: |
             dist/AutoHound-${{ github.ref_name }}-windows-x64.exe
+            installer/dist/AutoHound Setup *.exe
             dist/*.tar.gz
             dist/*.whl
             AutoHound-${{ github.ref_name }}-source.zip
+            assets/autohound.png
           draft: false
           prerelease: false
         env:

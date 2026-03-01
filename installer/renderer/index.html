@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoHound Setup</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Custom titlebar -->
+    <div class="titlebar">
+        <div class="titlebar-left">ACH</div>
+        <div class="titlebar-right">
+            <button id="btn-minimize" class="titlebar-btn">―</button>
+            <button id="btn-close" class="titlebar-btn">✕</button>
+        </div>
+    </div>
+
+    <!-- Eclipse background -->
+    <div class="eclipse-background"></div>
+    <canvas id="particles"></canvas>
+
+    <!-- Main container -->
+    <div class="installer-container">
+        <!-- Screen 1: Splash -->
+        <div id="screen-splash" class="screen active">
+            <div class="splash-content">
+                <img src="../assets/autohound_small.png" class="splash-logo" alt="AutoHound">
+                <h1 class="title-main">AUTOHOUND</h1>
+                <p class="subtitle">v0.1 — ATTACK PATH INTELLIGENCE ENGINE</p>
+                <p class="division">ACH RESEARCH DIVISION</p>
+                <p class="copyright">© 2026 GORDON PRESCOTT. ALL RIGHTS RESERVED.</p>
+                <p class="warning">AUTHORIZED ENVIRONMENTS ONLY</p>
+            </div>
+            <div class="progress-indicator">
+                <div class="loading-bar"></div>
+            </div>
+        </div>
+
+        <!-- Screen 2: System Verification -->
+        <div id="screen-verify" class="screen">
+            <div class="eclipse-sidebar">
+                <img src="../assets/autohound_small.png" class="sidebar-logo" alt="AutoHound">
+            </div>
+            <div class="main-panel">
+                <h2 class="panel-title">SYSTEM VERIFICATION</h2>
+                <div class="check-list">
+                    <div class="check-item pending" data-check="docker">
+                        <span class="check-symbol">◆</span>
+                        <span class="check-label">DOCKER DESKTOP</span>
+                        <span class="check-dots">.............</span>
+                        <span class="check-status">CHECKING</span>
+                    </div>
+                    <div class="check-item pending" data-check="python">
+                        <span class="check-symbol">◆</span>
+                        <span class="check-label">PYTHON 3.11+</span>
+                        <span class="check-dots">.............</span>
+                        <span class="check-status">CHECKING</span>
+                    </div>
+                    <div class="check-item pending" data-check="apikey">
+                        <span class="check-symbol">◆</span>
+                        <span class="check-label">ANTHROPIC API KEY</span>
+                        <span class="check-dots">.............</span>
+                        <span class="check-status">CHECKING</span>
+                    </div>
+                    <div class="check-item pending" data-check="disk">
+                        <span class="check-symbol">◆</span>
+                        <span class="check-label">AVAILABLE DISK SPACE</span>
+                        <span class="check-dots">.............</span>
+                        <span class="check-status">CHECKING</span>
+                    </div>
+                    <div class="check-item pending" data-check="bloodhound">
+                        <span class="check-symbol">◆</span>
+                        <span class="check-label">BLOODHOUND CE</span>
+                        <span class="check-dots">.............</span>
+                        <span class="check-status">CHECKING</span>
+                    </div>
+                </div>
+                <div id="error-container" class="error-container" style="display: none;">
+                    <div class="error-box">
+                        <div class="error-icon">⚠</div>
+                        <div class="error-message"></div>
+                        <div class="error-buttons">
+                            <button id="btn-retry" class="ach-button secondary">RETRY</button>
+                            <button id="btn-skip" class="ach-button secondary">SKIP</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn-continue" class="ach-button" disabled>CONTINUE</button>
+            </div>
+        </div>
+
+        <!-- Screen 3: Installation -->
+        <div id="screen-install" class="screen">
+            <div class="eclipse-sidebar">
+                <img src="../assets/autohound_small.png" class="sidebar-logo" alt="AutoHound">
+            </div>
+            <div class="main-panel">
+                <h2 class="panel-title">DEPLOYING AUTOHOUND</h2>
+                <div class="progress-container">
+                    <div class="progress-text">0%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+                <div id="install-error-container" class="error-container" style="display: none;">
+                    <div class="error-box">
+                        <div class="error-icon">⚠</div>
+                        <div class="error-message"></div>
+                        <div class="error-buttons">
+                            <button id="btn-install-retry" class="ach-button secondary">RETRY</button>
+                            <button id="btn-install-skip" class="ach-button secondary">SKIP</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-terminal">
+                    <div class="terminal-line">Initializing installation environment...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 4: Complete -->
+        <div id="screen-complete" class="screen">
+            <div class="main-panel fullwidth">
+                <img src="../assets/autohound_small.png" class="complete-logo" alt="AutoHound">
+                <h1 class="complete-title">AUTOHOUND DEPLOYED</h1>
+                <div class="button-group">
+                    <button id="btn-launch" class="ach-button primary">LAUNCH BLOODHOUND</button>
+                    <button id="btn-docs" class="ach-button secondary">VIEW DOCUMENTATION</button>
+                </div>
+                <div class="info-panel">
+                    <div class="info-line">
+                        <span class="info-label">BloodHound URL</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" style="color: #C77DFF; font-weight: bold;">http://localhost:8080</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">Default Username</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" style="color: #f0c040; font-weight: bold;">admin</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">Default Password</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" id="bloodhound-password" style="color: #f0c040; font-weight: bold; font-size: 11px;">Check terminal below</span>
+                    </div>
+                    <div class="info-line" id="autohound-path-line">
+                        <span class="info-label">AutoHound CLI</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" id="autohound-path" style="font-size: 10px;">Detecting...</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">Quick Start</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" style="font-size: 10px;">autohound --input data.zip</span>
+                    </div>
+                </div>
+                <div class="complete-terminal-container">
+                    <div class="complete-terminal-title">BloodHound CE Startup Output (check for generated password):</div>
+                    <div class="complete-terminal" id="complete-terminal">
+                        <div class="terminal-line">BloodHound CE output will appear here during installation...</div>
+                    </div>
+                </div>
+                <p class="footer-copyright">© 2026 GORDON PRESCOTT — ACH RESEARCH DIVISION — AUTHORIZED USE ONLY</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

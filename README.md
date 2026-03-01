@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/autohound_small.png" width="150" alt="AutoHound">
+</p>
+
 # AutoHound
 
 **Active Directory Attack Path Intelligence Engine**
@@ -58,14 +62,31 @@ It operates **exclusively** on pre-collected BloodHound JSON data or a local Neo
 
 ## Download
 
-**Latest release:** [v0.1.0](https://github.com/geo2x/AutoHound/releases)
+**Latest release:** [v0.2.0](https://github.com/geo2x/AutoHound/releases)
 
-Install via pip:
+| File | Description |
+|------|-------------|
+| `AutoHound Setup 0.2.0.exe` | **GUI Installer** - Recommended for new users. Installs everything automatically. |
+| `AutoHound-v0.2.0-windows-x64.exe` | **CLI Standalone** - For existing setups or advanced users. |
+| `autohound-0.2.0.tar.gz` | **Python Package** - Install via pip. |
+
+**Option 1: GUI Installer (Recommended)**
+```powershell
+# Download AutoHound Setup 0.2.0.exe from releases
+# Double-click to run - it will:
+#   ✓ Verify system requirements (Docker, Python 3.11+)
+#   ✓ Start BloodHound CE containers
+#   ✓ Install AutoHound CLI
+#   ✓ Configure API key
+#   ✓ Create desktop shortcuts
+```
+
+**Option 2: Install via pip**
 ```bash
 pip install autohound
 ```
 
-Or download source and install:
+**Option 3: Install from source**
 ```bash
 git clone https://github.com/geo2x/AutoHound.git
 cd AutoHound
