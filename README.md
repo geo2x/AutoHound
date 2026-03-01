@@ -58,9 +58,19 @@ It operates **exclusively** on pre-collected BloodHound JSON data or a local Neo
 
 ## Download
 
-**[AutoHound-v0.1.0-windows-x64.exe](#)** — Windows standalone, no install needed  
-**[Source tarball](#)** — pip installable  
-[View all releases →](https://github.com/geo2x/AutoHound/releases)
+**Latest release:** [v0.1.0](https://github.com/geo2x/AutoHound/releases)
+
+Install via pip:
+```bash
+pip install autohound
+```
+
+Or download source and install:
+```bash
+git clone https://github.com/geo2x/AutoHound.git
+cd AutoHound
+pip install -e .
+```
 
 ---
 
@@ -274,6 +284,6 @@ requires written permission from Gordon Prescott.
 
 **Unauthorized reproduction or redistribution is prohibited.**
 
-For commercial licensing inquiries: gordon.j.prescott23@gmail.com
+For commercial licensing inquiries: contact via GitHub
 
 See [LICENSE](LICENSE) for full terms.
