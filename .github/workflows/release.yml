@@ -35,16 +35,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: installer/package-lock.json
 
       - name: Install installer dependencies
+        working-directory: installer
         run: |
-          cd installer
-          npm ci
+          npm ci --prefer-offline --no-audit --no-fund
+        env:
+          npm_config_cache: ${{ runner.temp }}/npm-cache
 
       - name: Build Electron installer
+        working-directory: installer
         run: |
-          cd installer
           npm run build
+        env:
+          npm_config_cache: ${{ runner.temp }}/npm-cache
+          DEBUG: electron-builder
+
+      - name: List build output
+        run: |
+          dir installer\dist\
+        shell: cmd
 
       - name: List build artifacts
         run: |
