@@ -1,0 +1,35 @@
+{
+  "name": "autohound-installer",
+  "version": "0.2.0",
+  "description": "AutoHound Installer",
+  "author": "ACH Research Division",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "io.ach.autohound",
+    "productName": "AutoHound",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/autohound.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "assets/autohound.ico",
+      "installerHeaderIcon": "assets/autohound.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AutoHound"
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "dependencies": {
+    "three": "^0.183.2"
+  }
+}
