@@ -32,13 +32,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install installer dependencies
-        working-directory: ./installer
-        run: npm install
-
       - name: Build Installer
-        working-directory: ./installer
-        run: npm run build
+        working-directory: ${{ github.workspace }}/installer
+        run: |
+          npm install
+          npm run build
 
       - name: Publish Release
         uses: ncipollo/release-action@v1
