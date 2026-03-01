@@ -1,0 +1,46 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pyinstaller build
+      
+      - name: build exe
+        run: |
+          pyinstaller --onefile --name autohound --icon installer/assets/autohound.ico autohound/cli.py
+      
+      - name: build python package
+        run: python -m build
+      
+      - name: create source zip
+        run: |
+          git archive --format=zip --output=autohound-source.zip HEAD
+      
+      - name: create release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/autohound.exe
+            dist/*.tar.gz
+            dist/*.whl
+            autohound-source.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
