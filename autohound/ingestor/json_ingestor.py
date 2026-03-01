@@ -127,14 +127,51 @@ class JsonIngestor:
             )
             self.graph.add_edge(edge)
         
+        # Process group members (reverse: members -> group)
+        members = item.get("Members", [])
+        for member in members:
+            member_id = member.get("ObjectIdentifier") if isinstance(member, dict) else member
+            if member_id:
+                edge = Edge(
+                    source_id=member_id,
+                    target_id=object_id,
+                    edge_type=EdgeType.MEMBER_OF
+                )
+                self.graph.add_edge(edge)
+        
+        # Process local admins (admin -> computer)
+        local_admins = item.get("LocalAdmins", [])
+        for admin in local_admins:
+            admin_id = admin.get("ObjectIdentifier") if isinstance(admin, dict) else admin
+            if admin_id:
+                edge = Edge(
+                    source_id=admin_id,
+                    target_id=object_id,
+                    edge_type=EdgeType.ADMIN_TO
+                )
+                self.graph.add_edge(edge)
+        
+        # Process sessions (user has session on computer)
+        sessions = item.get("Sessions", [])
+        for session in sessions:
+            user_id = session.get("ObjectIdentifier") if isinstance(session, dict) else session
+            if user_id:
+                edge = Edge(
+                    source_id=object_id,
+                    target_id=user_id,
+                    edge_type=EdgeType.HAS_SESSION
+                )
+                self.graph.add_edge(edge)
+        
         # Process other relationship arrays
         for rel_key in ["AllowedToDelegate", "HasSIDHistory", "TrustedBy"]:
             rel_array = item.get(rel_key, [])
             for target in rel_array:
                 edge_type = self._map_relationship_key(rel_key)
+                target_id = target.get("ObjectIdentifier") if isinstance(target, dict) else target
                 edge = Edge(
                     source_id=object_id,
-                    target_id=target.get("ObjectIdentifier", target),
+                    target_id=target_id,
                     edge_type=edge_type
                 )
                 self.graph.add_edge(edge)

@@ -183,6 +183,9 @@ Return the enriched path in the same JSON format with added fields:
         """
         logger.info("Starting attack path discovery pass...")
         
+        prompt_content = f"Analyze this Active Directory environment and identify attack paths:\n\n{graph_description}"
+        logger.debug(f"Full prompt length: {len(prompt_content)} characters")
+        
         try:
             response = self.client.messages.create(
                 model=self.model,
@@ -192,7 +195,7 @@ Return the enriched path in the same JSON format with added fields:
                 messages=[
                     {
                         "role": "user",
-                        "content": f"Analyze this Active Directory environment and identify attack paths:\n\n{graph_description}"
+                        "content": prompt_content
                     }
                 ]
             )
