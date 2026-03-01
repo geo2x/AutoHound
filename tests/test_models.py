@@ -1,5 +1,5 @@
 """
-AutoHound — Attack Path Intelligence Engine
+AutoHound ï¿½ Attack Path Intelligence Engine
 Copyright (c) 2026 Gordon Prescott. All rights reserved.
 
 ACH Research Division

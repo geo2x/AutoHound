@@ -9,7 +9,7 @@
     Handles dependencies, virtual environment, and configuration
 
 .NOTES
-    Author: Gordon P. (@geo2x)
+    Author: Gordon Prescott (@geo2x)
     License: MIT
     Requires: PowerShell 5.1+, Python 3.11+
 #>
@@ -123,9 +123,9 @@ if ($?) {
 # Step 7: Final verification
 Write-Host "`n[*] Step 7/7: Verifying installation..." -ForegroundColor Yellow
 
-$bloodhoundAiVersion = & $venvPython -c "import autohound; print(autohound.__version__)" 2>&1
+$autohoundVersion = & $venvPython -c "import autohound; print(autohound.__version__)" 2>&1
 if ($?) {
-    Write-Host "   ✅ AutoHound v$bloodhoundAiVersion installed successfully" -ForegroundColor Green
+    Write-Host "   ✅ AutoHound v$autohoundVersion installed successfully" -ForegroundColor Green
 } else {
     Write-Host "   ❌ Installation verification failed" -ForegroundColor Red
     exit 1
