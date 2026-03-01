@@ -1,0 +1,241 @@
+# BloodHound AI
+
+**Active Directory Attack Path Intelligence Engine**
+
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TLP:WHITE](https://img.shields.io/badge/TLP-WHITE-white.svg)](https://www.cisa.gov/tlp)
+
+BloodHound AI is an open-source offensive security research tool that augments [BloodHound Community Edition](https://github.com/SpecterOps/BloodHound) with a large language model (LLM) reasoning layer. It automatically analyzes Active Directory relationship graphs, surfaces non-obvious attack paths that standard queries miss, and generates executable command sequences mapped to MITRE ATT&CK.
+
+![BloodHound AI Workflow](docs/workflow.png)
+
+## 🎯 Key Features
+
+- **🔍 Novel Path Discovery** - Identifies multi-hop attack paths through unusual ACL combinations, GPO abuse, delegation chains, and cross-trust relationships that standard BloodHound queries don't surface
+- **⚡ Command Generation** - Produces exact, copy-paste ready commands (PowerView, Impacket, Rubeus) for each attack step
+- **🎖️ ATT&CK Mapping** - Automatically maps every technique to MITRE ATT&CK with tactic, technique ID, and sub-technique
+- **🛡️ Defensive Guidance** - Provides Windows Event IDs, Sigma rules, and remediation recommendations for every offensive technique
+- **📊 Prioritization** - Scores paths by Impact (40%), Stealth (35%), and Complexity (25%) to focus operator effort
+- **📈 ATT&CK Navigator Integration** - Generates importable layer files for visualization at [MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/)
+
+## ⚠️ Ethical Use & Legal Notice
+
+**READ THIS BEFORE USING THIS TOOL**
+
+BloodHound AI is designed **exclusively** for use in:
+
+- ✅ Your own intentionally vulnerable Active Directory lab
+- ✅ GOAD ([Game of Active Directory](https://github.com/Orange-Cyberdefense/GOAD)) or equivalent authorized test environments
+- ✅ Client engagements with **explicit written authorization** (signed scope of work / rules of engagement)
+
+**Never** use this tool against any system, network, or environment without written authorization. Unauthorized use may violate the **Computer Fraud and Abuse Act (CFAA)** and equivalent statutes.
+
+### Hard Technical Controls
+
+This tool:
+
+- ❌ Does **NOT** perform live network enumeration
+- ❌ Does **NOT** touch Active Directory infrastructure
+- ❌ Does **NOT** execute commands automatically
+- ❌ Does **NOT** exfiltrate data
+
+It operates **exclusively** on pre-collected BloodHound JSON data or a local Neo4j instance. Input: BloodHound export. Output: local report file. Nothing else.
+
+**Classification:** TLP:WHITE - Shareable within the security research community  
+**Use Restriction:** Authorized lab and engagement environments only
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.11 or higher
+- Anthropic API key ([get one here](https://console.anthropic.com/))
+- BloodHound data (JSON export or Neo4j database)
+
+### Installation
+
+```powershell
+# Clone the repository
+git clone https://github.com/yourusername/bloodhound-ai.git
+cd bloodhound-ai
+
+# Create virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -e .
+
+# Or install from requirements.txt
+pip install -r requirements.txt
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env and add your ANTHROPIC_API_KEY
+```
+
+### Basic Usage
+
+```powershell
+# Analyze BloodHound JSON export
+bloodhound-ai --input ./bloodhound_export.json --output ./reports
+
+# Analyze from Neo4j database
+bloodhound-ai --neo4j-uri bolt://localhost:7687 --neo4j-password yourpass --output ./reports
+
+# Use specific Claude model
+bloodhound-ai --input data.json --model claude-sonnet-4-20250514
+```
+
+### Example Output
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║              Active Directory Attack Path AI                 ║
+║                       Version 0.1.0                          ║
+║   TLP:WHITE - Authorized Research & Lab Use Only            ║
+╚══════════════════════════════════════════════════════════════╝
+
+[+] Discovered 3 attack path(s)
+
+[+] Reports generated:
+    - Markdown Report: ./reports/bloodhound_ai_report.md
+    - ATT&CK Navigator: ./reports/attack_navigator_layer.json
+
+TOP ATTACK PATHS:
+
+1. Shadow Admin via GPO Delegation (Score: 87.5/100)
+   Low-privilege user has GenericAll on GPO that applies to Domain Controllers OU...
+
+2. Kerberos Delegation Chain (Score: 82.3/100)
+   Computer with unconstrained delegation can impersonate domain admin...
+
+3. ACL Inheritance Abuse (Score: 76.8/100)
+   WriteDacl on parent OU cascades to high-value group objects...
+```
+
+## 📚 Documentation
+
+### Project Structure
+
+```
+bloodhound-ai/
+├── bloodhound_ai/
+│   ├── ingestor/          # Neo4j & JSON data ingestion
+│   ├── serializer/        # Graph to LLM-optimized text
+│   ├── reasoning/         # LLM reasoning engine
+│   ├── reporting/         # Markdown & ATT&CK Navigator output
+│   ├── utils/             # Shared utilities
+│   └── cli.py             # Command-line interface
+├── tests/                 # Test suite
+├── docs/                  # Documentation
+├── examples/              # Example outputs
+└── requirements.txt       # Dependencies
+```
+
+### Architecture
+
+1. **Ingestor** - Connects to Neo4j or parses BloodHound JSON exports
+2. **Serializer** - Converts graph to chunked natural language descriptions optimized for LLM context windows
+3. **Reasoning Engine** - Multi-pass LLM analysis (discovery → validation/enrichment)
+4. **Report Generator** - Produces Markdown reports and ATT&CK Navigator layers
+
+### Command Reference
+
+```powershell
+bloodhound-ai [OPTIONS]
+
+Options:
+  -i, --input PATH              Path to BloodHound JSON export (required)
+  -o, --output PATH             Output directory (default: ./reports)
+  --neo4j-uri TEXT              Neo4j URI (alternative to JSON)
+  --neo4j-user TEXT             Neo4j username (default: neo4j)
+  --neo4j-password TEXT         Neo4j password
+  --api-key TEXT                Anthropic API key
+  --model TEXT                  Claude model (default: claude-sonnet-4-20250514)
+  --skip-auth-check             Skip authorization verification
+  --log-level [DEBUG|INFO|WARNING|ERROR]
+  --version                     Show version
+  --help                        Show help message
+```
+
+## 🧪 Testing
+
+```powershell
+# Run tests
+pytest
+
+# With coverage
+pytest --cov=bloodhound_ai --cov-report=html
+
+# Run specific test
+pytest tests/test_models.py -v
+```
+
+## 🏗️ Building a Test Lab
+
+### Option 1: GOAD (Recommended)
+
+Use [GOAD](https://github.com/Orange-Cyberdefense/GOAD) - a pre-built intentionally vulnerable AD lab:
+
+```powershell
+# Clone GOAD
+git clone https://github.com/Orange-Cyberdefense/GOAD
+cd GOAD
+
+# Follow installation instructions in GOAD README
+# Collect BloodHound data and analyze with BloodHound AI
+```
+
+### Option 2: Custom Lab
+
+Build your own lab with intentional misconfigurations:
+
+| VM | Role | Misconfigurations |
+|----|------|-------------------|
+| Windows Server 2019 | Domain Controller | Unconstrained delegation, weak password policy |
+| Windows Server 2019 | Member Server | Kerberoastable SPNs, local admin reuse |
+| Windows 10/11 (x2) | Workstations | Admin sessions, SMB signing disabled |
+| Kali Linux | Attacker | BloodHound CE, Impacket, Rubeus installed |
+
+## 🤝 Contributing
+
+Contributions welcome! This is a research project for learning and portfolio building.
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [SpecterOps](https://specterops.io/) for BloodHound Community Edition
+- [MITRE](https://attack.mitre.org/) for the ATT&CK framework
+- [Anthropic](https://www.anthropic.com/) for Claude API
+- [Orange Cyberdefense](https://github.com/Orange-Cyberdefense) for GOAD
+- The offensive security research community
+
+## 📖 References
+
+- [BloodHound Community Edition](https://github.com/SpecterOps/BloodHound)
+- [MITRE ATT&CK Framework](https://attack.mitre.org)
+- [GOAD Lab](https://github.com/Orange-Cyberdefense/GOAD)
+- [Sigma Rules](https://github.com/SigmaHQ/sigma)
+- [ADSecurity.org](https://adsecurity.org)
+
+## 📧 Contact
+
+**Author:** [Your Name]  
+**GitHub:** [@yourusername](https://github.com/yourusername)  
+**Purpose:** Portfolio project for DOD/Federal cybersecurity roles
+
+---
+
+**BloodHound AI** - Bringing LLM reasoning to Active Directory attack path analysis  
+**TLP:WHITE** - Authorized Research Only

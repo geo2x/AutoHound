@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Environment Variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Type Checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Rovo Dev temporary files
+tmp_rovodev_*
+
+# BloodHound Data (don't commit real AD data)
+*.json
+*.zip
+!tests/fixtures/*.json
+
+# Reports
+reports/
+*.md
+!README.md
+!docs/*.md
+
+# OS
+.DS_Store
+Thumbs.db

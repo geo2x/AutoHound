@@ -1,0 +1,27 @@
+# BloodHound AI - Python Dependencies
+# Active Directory Attack Path Intelligence Engine
+
+# Core Dependencies
+neo4j>=5.14.0                    # Neo4j database driver for BloodHound data
+anthropic>=0.18.0                # Claude API for LLM reasoning
+python-dotenv>=1.0.0             # Environment variable management for API keys
+
+# CLI Framework
+click>=8.1.0                     # Command-line interface framework
+
+# Data Processing
+pydantic>=2.5.0                  # Data validation and serialization
+jinja2>=3.1.0                    # Template engine for report generation
+
+# MITRE ATT&CK Integration
+mitreattack-python>=3.0.0        # Official MITRE ATT&CK library
+
+# Testing
+pytest>=7.4.0                    # Test framework
+pytest-cov>=4.1.0                # Test coverage reporting
+pytest-mock>=3.12.0              # Mocking for tests
+
+# Development
+black>=23.0.0                    # Code formatting
+ruff>=0.1.0                      # Fast Python linter
+mypy>=1.7.0                      # Static type checking

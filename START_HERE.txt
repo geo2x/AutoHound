@@ -1,0 +1,52 @@
+================================================================
+BloodHound AI - Quick Start Commands
+================================================================
+
+WORKING DIRECTORY:
+C:\Users\gordo\Projects\BloodHound-AI
+
+COMMANDS TO COPY/PASTE:
+----------------------------------------------------------------
+
+1. Navigate to project directory:
+   cd C:\Users\gordo\Projects\BloodHound-AI
+
+2. Activate virtual environment (if you create one):
+   .\venv\Scripts\Activate.ps1
+
+3. Run tests:
+   pytest tests/
+
+4. Run BloodHound AI (once implemented):
+   python -m bloodhound_ai --input <bloodhound_export.json> --output report.md
+
+================================================================
+QUICK REFERENCE:
+================================================================
+
+Project Structure:
+- bloodhound_ai/ingestor/     - Neo4j and JSON data ingestion
+- bloodhound_ai/serializer/   - Graph to LLM-ready text conversion
+- bloodhound_ai/reasoning/    - LLM reasoning engine
+- bloodhound_ai/reporting/    - Report generation (Markdown, ATT&CK)
+- bloodhound_ai/utils/        - Shared utilities
+- tests/                      - Test suite
+- docs/                       - Documentation
+- examples/                   - Example outputs and usage
+
+Key Files to Know:
+- setup.py or pyproject.toml  - Package configuration (to be created)
+- requirements.txt            - Python dependencies (to be created)
+- README.md                   - Main documentation (to be created)
+- PRD.txt                     - This is your source of truth
+
+================================================================
+ROVO DEV CONTEXT:
+================================================================
+
+When restarting Rovo Dev, provide this context:
+"I'm working on BloodHound AI - an Active Directory attack path 
+intelligence engine that uses LLMs to analyze BloodHound data. 
+The PRD is in PRD.txt. We're currently at [DESCRIBE CURRENT PHASE]."
+
+================================================================

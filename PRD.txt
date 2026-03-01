@@ -1,0 +1,319 @@
+================================================================
+ETHICAL GUIDELINES & RESEARCHER BACKGROUND
+BloodHound AI — Active Directory Attack Path Intelligence Engine
+================================================================
+
+RESEARCHER BACKGROUND
+---------------------
+I am a cybersecurity professional specializing in offensive security and red team operations. My background includes:
+
+- Active red team operator with hands-on experience in penetration testing, adversary simulation, and vulnerability research
+- Proficient in Active Directory attack techniques including Kerberos abuse, ACL exploitation, lateral movement, and privilege escalation
+- Experienced with industry-standard offensive tooling: BloodHound, Impacket, Rubeus, PowerView, Cobalt Strike, and custom tooling
+- Pursuing Department of Defense (DOD) cybersecurity roles requiring demonstrated offensive capability and strong ethical framework
+- Building public research portfolio on GitHub to showcase novel tooling and responsible security research methodology
+- Studying Computer Science and cybersecurity with focus on practical offensive security application
+
+This project (BloodHound AI) is a portfolio research tool designed to demonstrate LLM integration with offensive security workflows, built entirely within authorized lab environments and documented publicly for peer review.
+
+ETHICAL GUIDELINES — NON-NEGOTIABLE SCOPE
+------------------------------------------
+The following ethical constraints govern every aspect of this project. They are not suggestions — they are hard requirements built into the tool architecture.
+
+1. AUTHORIZED ENVIRONMENTS ONLY
+   This tool is designed exclusively for use in:
+   - The researcher's own intentionally vulnerable Active Directory lab
+   - GOAD (Game of Active Directory) or equivalent purpose-built vulnerable environments
+   - Client environments with explicit written authorization (signed scope of work / rules of engagement)
+   Never against any system, network, or environment without written authorization. CFAA and equivalent statutes apply.
+
+2. NO LIVE ENUMERATION
+   BloodHound AI operates exclusively on pre-collected BloodHound JSON data or a local Neo4j instance.
+   It does not perform network enumeration, does not send packets, and does not interact with live Active Directory infrastructure.
+   Input: BloodHound export file. Output: local report file. Nothing else.
+
+3. NO AUTOMATED EXPLOITATION
+   The tool generates human-readable command sequences for manual review only.
+   It does not execute commands, does not establish connections, and does not automate any exploitation step.
+   A human operator must review, understand, and manually execute any generated command in an authorized environment.
+
+4. NO DATA EXFILTRATION
+   Zero exfiltration capability exists in the codebase.
+   The tool reads BloodHound data locally and writes a report locally.
+   No data leaves the researcher's machine through this tool.
+
+5. DUAL-USE DESIGN — DEFENSIVE VALUE IS MANDATORY
+   Every offensive technique surfaced by the tool must be accompanied by:
+   - Corresponding Windows Event IDs for detection
+   - Sigma rule stub for blue team implementation
+   - Remediation recommendation
+   This is not optional. The tool only ships if defensive guidance ships alongside it.
+
+6. TRANSPARENT PUBLIC RESEARCH
+   All code is public on GitHub. All techniques are documented against the publicly available MITRE ATT&CK framework.
+   No novel 0-day research. No proprietary exploitation techniques. Everything is based on publicly known, documented attack patterns.
+   The README prominently states scope requirements and ethical use policy.
+
+7. PORTFOLIO AND RESEARCH PURPOSE
+   This tool exists to demonstrate technical capability for legitimate cybersecurity career purposes (DOD/federal offensive security roles) and to advance the security community's understanding of how LLMs can augment offensive security workflows.
+   It is not a commercial product. It is not for sale. It is not for use by unauthorized third parties.
+
+CLASSIFICATION: TLP:WHITE — Shareable within the security research community
+USE RESTRICTION: Authorized lab and engagement environments only
+
+================================================================
+PRD FULL TEXT — PASTE BELOW INTO ROVO DEV
+================================================================
+
+PRODUCT REQUIREMENTS DOCUMENT
+
+BloodHound AI
+Active Directory Attack Path Intelligence Engine
+
+Version: 0.1 (Draft)  |  Status: In Review  |  Classification: TLP:WHITE — Authorized Research Only
+Author: [Your Name]  |  Date: 2026
+
+================================================================
+1. Executive Summary
+================================================================
+
+BloodHound AI is an open-source offensive security research tool that augments BloodHound Community Edition with a large language model (LLM) reasoning layer. It automatically analyzes Active Directory relationship graphs, surfaces non-obvious attack paths that standard shortest-path queries miss, and generates executable command sequences mapped to MITRE ATT&CK — all within an isolated lab environment.
+
+The tool is designed for red team operators, penetration testers, and security researchers building portfolio projects for roles in offensive security. It demonstrates that LLMs can reason meaningfully over graph-structured AD data, closing the gap between raw BloodHound output and actionable attack narratives.
+
+Critically, BloodHound AI operates exclusively on pre-collected BloodHound JSON data. It does not touch live systems, does not perform enumeration, and does not exfiltrate data. Its sole input is a BloodHound export; its sole output is a structured attack path report for authorized use.
+
+================================================================
+2. Problem Statement
+================================================================
+
+2.1 The BloodHound Gap
+
+BloodHound is the industry standard for Active Directory attack path visualization. Every mature red team uses it. However, the tool surfaces paths through pre-defined Cypher queries — shortest paths, DCSync paths, Kerberoastable users — queries a human wrote in advance.
+
+The gap: real AD environments are messy. Novel attack paths emerge from unusual combinations of ACL misconfigurations, trust relationships, group memberships, and delegation settings that no pre-written query anticipates. A skilled human analyst can find these paths by reasoning over the graph, but this takes hours and requires deep expertise.
+
+2.2 Current Workflow Pain
+
+Pain Point           | Current State                                | Impact
+---------------------|----------------------------------------------|----------------------------------------
+Path Discovery       | Manual GUI clicking through BloodHound graph | Hours per engagement, expert-dependent
+Novel Path Detection | No systematic approach beyond default queries| Non-obvious paths missed entirely
+Command Generation   | Analyst writes commands from memory          | Slow, inconsistent, error-prone
+ATT&CK Mapping       | Manual lookup after the fact                 | Often skipped due to time pressure
+Report Generation    | Manual write-up from notes                   | Bottleneck at end of every engagement
+
+================================================================
+3. Goals & Non-Goals
+================================================================
+
+3.1 Goals
+
+G1: Novel Path Detection — Automatically identify high-value attack paths in BloodHound data that default queries do not surface
+G2: Command Generation — Generate exact, executable command sequences for each identified path, ready to use in authorized lab environments
+G3: ATT&CK Mapping — Map every technique to MITRE ATT&CK automatically with tactic, technique ID, and sub-technique
+G4: Prioritization — Prioritize paths by stealth, impact, and complexity to help operators focus effort during time-boxed engagements
+G5: Report Output — Produce a structured, professional report suitable for a GitHub portfolio and red team deliverable reference
+G6: Dual-Use Value — Provide detection guidance alongside every offensive technique for blue team value
+
+3.2 Non-Goals
+
+- Live Active Directory enumeration — the tool never touches a network
+- Automated exploitation — it generates commands for human review, not autonomous execution
+- Production deployment against real environments without explicit written authorization
+- Bypassing EDR or security controls — this is path analysis, not evasion tooling
+- Any functionality that operates outside the user's own lab or authorized engagement scope
+
+================================================================
+4. User Personas
+================================================================
+
+Persona             | Background                                 | Primary Need                                     | Success Metric
+--------------------|--------------------------------------------|--------------------------------------------------|------------------------------------------
+Red Team Operator   | 3-5 yrs offensive security, OSCP+          | Faster path discovery during engagements         | Finds paths in <10 min vs 2+ hours manually
+Security Researcher | Building public portfolio for DOD/Fed roles| Novel, demonstrable project that impresses peers | GitHub stars, DEF CON talk acceptance
+Pentest Lead        | Managing team engagements                  | Consistent, repeatable methodology across team   | Standardized reports, junior analyst productivity
+Blue Team Analyst   | Defensive security, building detections    | Understanding what attackers see in their own AD | Detection coverage mapped to every surfaced path
+
+================================================================
+5. Technical Architecture
+================================================================
+
+5.1 System Overview
+
+BloodHound AI is a Python CLI application with four primary components: a Neo4j data ingestion layer, a graph-to-text serializer, an LLM reasoning engine, and a structured report generator.
+
+5.2 Component Breakdown
+
+Component 1: Neo4j Ingestor
+- Connects to local BloodHound Neo4j instance via bolt://localhost:7687
+- Executes Cypher queries to extract nodes (users, computers, groups, GPOs, OUs, domains) and relationships (MemberOf, AdminTo, HasSession, CanRDP, DCSync, GenericAll, WriteDACL, etc.)
+- Normalizes output into a structured Python dataclass graph representation
+- Alternatively accepts BloodHound JSON export files directly — no live Neo4j required
+
+Component 2: Graph Serializer
+- Converts the graph dataclass into chunked natural language descriptions optimized for LLM context windows
+- Implements intelligent chunking — large AD environments exceed context limits, so the serializer prioritizes high-value nodes (Domain Admins, DCs, Tier 0 assets) and their relationships
+- Produces structured JSON schema describing node attributes, edge types, and relationship metadata
+- Handles deduplication and relationship normalization
+
+Component 3: LLM Reasoning Engine
+- Sends serialized graph chunks to Claude or GPT-4 API with a structured system prompt
+- System prompt instructs the model to: identify multi-hop attack paths, reason about privilege escalation chains, flag unusual ACL combinations, and prioritize by impact/stealth/complexity
+- Implements a multi-pass approach: initial path discovery pass, then a refinement pass that validates logical consistency of each path
+- Returns structured JSON output: list of attack paths, each with steps, required tools, detection likelihood, and ATT&CK mappings
+
+Component 4: Report Generator
+- Consumes structured JSON from the reasoning engine
+- Generates a Markdown and optional PDF report with: executive summary, prioritized path list, per-path command sequences, ATT&CK navigator layer JSON, and detection recommendations
+- ATT&CK navigator layer is automatically generated and can be imported directly into the ATT&CK Navigator web tool
+
+5.3 Tech Stack
+
+Component          | Technology                              | Rationale
+-------------------|-----------------------------------------|--------------------------------------------------
+Language           | Python 3.11+                            | Universal in security tooling, rich ecosystem
+AD Data Source     | BloodHound CE + Neo4j / JSON export     | Industry standard, already in every red team workflow
+Graph Queries      | neo4j Python driver + Cypher            | Native Neo4j interface, full query flexibility
+LLM API            | Anthropic Claude API (claude-sonnet-4-6)| Strong reasoning over structured data, large context
+CLI Framework      | Click or Typer                          | Clean argument parsing, help text generation
+Report Output      | Jinja2 templates + markdown             | Flexible, version controllable, CI/CD friendly
+ATT&CK Integration | mitreattack-python library              | Official MITRE library for technique validation
+Testing            | pytest + intentionally misconfigured AD | Reproducible, documented test environment
+
+================================================================
+6. Core Features
+================================================================
+
+6.1 Feature: Novel Path Discovery
+
+The primary differentiator. Beyond default BloodHound shortest-path queries, the LLM reasons over the full graph to find:
+- Multi-hop paths through unexpected intermediary objects (e.g., GenericAll on a GPO that applies to a group that AdminTo a DC)
+- Shadow admin chains — users with Write permissions on high-value group objects who are not explicit members
+- Cross-domain trust abuse paths that traverse forest trust relationships
+- ACL inheritance chains where permissions cascade through OU structure in non-obvious ways
+- Kerberos delegation abuse combinations (unconstrained + resource-based + protocol transition chains)
+
+6.2 Feature: Executable Command Generation
+
+For each identified path, the tool generates exact commands ready to copy-paste in an authorized lab:
+- PowerView commands for enumeration steps
+- Impacket command strings for remote exploitation (secretsdump, GetUserSPNs, etc.)
+- Rubeus commands for Kerberos attacks (AS-REP roasting, ticket requests, S4U abuse)
+- BloodHound CE custom query strings to visualize the specific path in the GUI
+- All commands annotated with expected output and failure conditions
+
+6.3 Feature: Prioritization Scoring
+
+Each path receives a composite score across three dimensions:
+
+Dimension  | Description                                                                 | Weight
+-----------|-----------------------------------------------------------------------------|-------
+Impact     | Highest privilege achievable at path end (DA, EA, local admin, data access) | 40%
+Stealth    | Estimated detection likelihood based on technique visibility in common SIEMs | 35%
+Complexity | Number of steps, required tools, prerequisite access, likelihood of success  | 25%
+
+6.4 Feature: MITRE ATT&CK Integration
+- Every technique in every path mapped to ATT&CK tactic, technique, and sub-technique
+- ATT&CK Navigator layer JSON generated automatically — importable to navigator.attack.mitre.org
+- Detection query suggestions per technique (Sigma rules where applicable)
+- Links to relevant ATT&CK technique pages for research reference
+
+6.5 Feature: Detection Guidance
+
+For every offensive technique surfaced, the report includes a corresponding defensive section:
+- Windows Event IDs to monitor for this technique
+- Sigma rule stub the blue team can implement
+- Remediation recommendation (ACL fix, configuration hardening, etc.)
+- This dual-use design is intentional — it makes the ethical framework airtight and increases real-world value
+
+================================================================
+7. Ethical Framework & Scope Controls
+================================================================
+
+BloodHound AI is research tooling. The following controls are non-negotiable and built into the application architecture, not just documented as guidelines.
+
+7.1 Hard Technical Controls
+- The tool accepts only BloodHound JSON exports or a local Neo4j connection string — it never performs live network enumeration
+- No exfiltration capability exists in the codebase — the tool reads data, reasons over it, and writes a local report
+- No automated execution of generated commands — all output is human-readable text for manual review
+- Scope validation prompt at startup requires user to confirm they own or have written authorization for the environment being analyzed
+
+7.2 Responsible Disclosure Posture
+- All techniques documented against publicly available ATT&CK framework — no novel 0-day research
+- Detection guidance published alongside every offensive technique
+- GitHub repository includes prominent scope and authorization requirements in README
+- Tool is explicitly labeled as lab and authorized engagement use only
+
+7.3 Legal Framework
+- Authorized testing only — Computer Fraud and Abuse Act (CFAA) and equivalent statutes apply
+- Recommended use: GOAD (Game of Active Directory) lab, or operator's own intentionally vulnerable domain
+- All demo output in repository generated against researcher's own lab infrastructure
+
+================================================================
+8. Recommended Lab Environment
+================================================================
+
+To develop, test, and demonstrate BloodHound AI, build the following intentionally vulnerable Active Directory lab:
+
+VM                  | Role                      | Misconfigurations to Introduce
+--------------------|---------------------------|--------------------------------------------------------------
+Windows Server 2019 | Domain Controller (DC01)  | Unconstrained delegation enabled, weak default password policy
+Windows Server 2019 | Member Server (SRV01)     | Local admin password reuse, Kerberoastable service accounts
+Windows 10/11 x2    | Workstations (WS01, WS02) | Admin sessions from privileged accounts, SMB signing disabled
+Kali Linux          | Attacker machine          | BloodHound CE, Impacket, Rubeus, PowerView installed
+
+Alternatively, use GOAD (Game of Active Directory) by Orange Cyberdefense — a pre-built intentionally vulnerable AD lab available on GitHub with documented misconfigurations covering most major attack techniques.
+
+================================================================
+9. Development Milestones
+================================================================
+
+Phase           | Milestone                                 | Deliverable                                         | Est. Duration
+----------------|-------------------------------------------|-----------------------------------------------------|---------------
+1 — Foundation  | Neo4j ingestor + JSON parser working      | Can read BloodHound data into Python objects        | 1-2 weeks
+1 — Foundation  | Graph serializer producing LLM-ready text | Chunked natural language graph descriptions         | 1 week
+2 — Core Engine | LLM prompt engineering complete           | System prompt producing valid structured JSON output| 2 weeks
+2 — Core Engine | Multi-pass reasoning implemented          | Discovery pass + validation pass both functional    | 1-2 weeks
+3 — Output      | Report generator producing Markdown output| Full structured report from end to end              | 1 week
+3 — Output      | ATT&CK Navigator layer generation         | Importable .json layer file in every report         | 3-5 days
+4 — Polish      | CLI interface complete with Click/Typer   | pip installable tool with --help documentation      | 1 week
+4 — Polish      | Lab demo + README + GitHub publish        | Public portfolio-ready repository                   | 1 week
+5 — Extension   | DEF CON talk CFP submission               | Abstract submitted with demo video                  | Ongoing
+
+================================================================
+10. Success Metrics
+================================================================
+
+Metric               | Target                                                              | How Measured
+---------------------|---------------------------------------------------------------------|--------------------------------------------------------
+Novel path discovery | Finds 1+ path not surfaced by default BloodHound queries in test lab| Manual verification against known lab misconfigurations
+Command accuracy     | Generated commands execute successfully without modification in lab  | Manual testing against lab environment
+ATT&CK coverage      | 100% of surfaced techniques mapped to valid ATT&CK ID               | mitreattack-python validation in CI
+Portfolio signal     | GitHub stars, forks, and recruiter/peer feedback                    | Repository analytics 90 days post-publish
+Peer recognition     | Accepted talk or writeup at security conference or blog             | CFP acceptance or community engagement
+
+================================================================
+11. Future Extensions
+================================================================
+
+- Azure AD / Entra ID support — BloodHound now ingests Entra data, extend reasoning to hybrid identity paths
+- Custom Cypher query generation — LLM writes its own graph queries rather than reasoning over serialized text
+- Slack/Teams integration — pipe findings into engagement collaboration channels automatically
+- VS Code extension — surface attack path suggestions inline while writing pentest notes
+- Fine-tuned model — collect labeled AD attack path data and fine-tune a smaller open source model for offline use
+
+================================================================
+Appendix A: Key References
+================================================================
+
+- BloodHound Community Edition: github.com/SpecterOps/BloodHound
+- MITRE ATT&CK Framework: attack.mitre.org
+- GOAD Lab: github.com/Orange-Cyberdefense/GOAD
+- mitreattack-python: github.com/mitre-attack/mitreattack-python
+- Sigma Rules: github.com/SigmaHQ/sigma
+- neo4j Python Driver: neo4j.com/docs/python-manual
+
+================================================================
+BloodHound AI — PRD v0.1 — TLP:WHITE — Authorized Research Only
+================================================================

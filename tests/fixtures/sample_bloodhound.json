@@ -1,0 +1,68 @@
+{
+  "data": [
+    {
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-500",
+      "Kind": "User",
+      "Properties": {
+        "name": "ADMINISTRATOR@TESTLAB.LOCAL",
+        "displayname": "Administrator",
+        "domain": "TESTLAB.LOCAL",
+        "enabled": true,
+        "admincount": true,
+        "distinguishedname": "CN=Administrator,CN=Users,DC=TESTLAB,DC=LOCAL"
+      },
+      "Aces": [],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-512",
+      "Kind": "Group",
+      "Properties": {
+        "name": "DOMAIN ADMINS@TESTLAB.LOCAL",
+        "domain": "TESTLAB.LOCAL",
+        "admincount": true,
+        "distinguishedname": "CN=Domain Admins,CN=Users,DC=TESTLAB,DC=LOCAL"
+      },
+      "Aces": [],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-1001",
+      "Kind": "User",
+      "Properties": {
+        "name": "LOWPRIV@TESTLAB.LOCAL",
+        "displayname": "Low Privilege User",
+        "domain": "TESTLAB.LOCAL",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=LowPriv,CN=Users,DC=TESTLAB,DC=LOCAL"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-1234567890-1234567890-1234567890-1001",
+          "RightName": "ForceChangePassword",
+          "IsInherited": false
+        }
+      ],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-1000",
+      "Kind": "Computer",
+      "Properties": {
+        "name": "DC01.TESTLAB.LOCAL",
+        "domain": "TESTLAB.LOCAL",
+        "enabled": true,
+        "distinguishedname": "CN=DC01,OU=Domain Controllers,DC=TESTLAB,DC=LOCAL",
+        "unconstraineddelegation": false
+      },
+      "Aces": [],
+      "AllowedToDelegate": []
+    }
+  ],
+  "meta": {
+    "type": "sessions",
+    "count": 4,
+    "version": 5
+  }
+}
