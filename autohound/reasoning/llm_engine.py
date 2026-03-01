@@ -22,6 +22,14 @@ logger = logging.getLogger(__name__)
 class LLMEngine:
     """LLM-powered attack path reasoning engine."""
     
+    # Model priority order - best to least preferred
+    MODEL_PRIORITY = [
+        "claude-3-5-sonnet-20241022",
+        "claude-3-5-sonnet-20240620",
+        "claude-3-sonnet-20240229",
+        "claude-3-haiku-20240307",
+    ]
+    
     DISCOVERY_SYSTEM_PROMPT = """You are an expert red team operator analyzing Active Directory environments.
 
 Your task is to identify novel, high-value attack paths from the BloodHound data provided.
@@ -94,21 +102,54 @@ Return the enriched path in the same JSON format with added fields:
 - event_ids, sigma_rule, detection_notes per step
 - remediation per step"""
     
-    def __init__(self, api_key: Optional[str] = None, model: str = "claude-sonnet-4-20250514"):
+    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
         """
         Initialize LLM engine.
         
         Args:
             api_key: Anthropic API key (defaults to ANTHROPIC_API_KEY env var)
-            model: Claude model to use
+            model: Claude model to use (if None, auto-detects best available)
         """
         self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
         if not self.api_key:
             raise ValueError("Anthropic API key required. Set ANTHROPIC_API_KEY environment variable.")
         
-        self.model = model
         self.client = Anthropic(api_key=self.api_key)
-        logger.info(f"Initialized LLM engine with model: {model}")
+        
+        # Auto-detect best available model if not specified
+        if model:
+            self.model = model
+            logger.info(f"Using specified model: {model}")
+        else:
+            self.model = self._detect_best_model()
+            logger.info(f"Auto-detected model: {self.model}")
+    
+    def _detect_best_model(self) -> str:
+        """
+        Detect the best available Claude model from the priority list.
+        
+        Returns:
+            Model ID of the best available model
+        """
+        logger.debug("Auto-detecting best available Claude model...")
+        
+        for model in self.MODEL_PRIORITY:
+            try:
+                # Test with minimal request
+                self.client.messages.create(
+                    model=model,
+                    max_tokens=10,
+                    messages=[{"role": "user", "content": "test"}]
+                )
+                logger.debug(f"Model {model} is available")
+                return model
+            except Exception as e:
+                logger.debug(f"Model {model} not available: {str(e)[:100]}")
+                continue
+        
+        # Fallback to first in list if none work (will fail with clear error)
+        logger.warning("No models in priority list available, using fallback")
+        return self.MODEL_PRIORITY[0]
     
     def discover_paths(self, graph_description: str) -> List[AttackPath]:
         """

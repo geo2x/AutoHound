@@ -11,6 +11,8 @@ permissions:
 jobs:
   build-and-release:
     runs-on: windows-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout code

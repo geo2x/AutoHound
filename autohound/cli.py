@@ -81,8 +81,8 @@ def verify_authorization() -> bool:
 @click.option('--api-key',
               help='Anthropic API key (or set ANTHROPIC_API_KEY env var)')
 @click.option('--model',
-              default='claude-sonnet-4-20250514',
-              help='Claude model to use')
+              default=None,
+              help='Claude model to use (auto-detects best available if not specified)')
 @click.option('--skip-auth-check',
               is_flag=True,
               help='Skip authorization verification (USE WITH CAUTION)')
@@ -98,7 +98,7 @@ def main(
     neo4j_user: str,
     neo4j_password: Optional[str],
     api_key: Optional[str],
-    model: str,
+    model: Optional[str],
     skip_auth_check: bool,
     log_level: str
 ) -> None:
@@ -115,8 +115,8 @@ def main(
         # Analyze from Neo4j database
         autohound --neo4j-uri bolt://localhost:7687 --neo4j-password pass --output ./reports
         
-        # Use specific Claude model
-        autohound --input data.json --model claude-sonnet-4-20250514
+        # Use specific Claude model (otherwise auto-detects best available)
+        autohound --input data.json --model claude-3-5-sonnet-20241022
     """
     # Load environment variables
     load_dotenv()
@@ -161,6 +161,10 @@ def main(
         # Step 3: LLM analysis
         logger.info("Step 3/5: Analyzing attack paths with LLM...")
         engine = LLMEngine(api_key=api_key, model=model)
+        
+        # Print model being used for user visibility
+        print(f"\n[i] Using model: {engine.model}\n")
+        
         attack_paths = engine.analyze(graph_text)
         
         if not attack_paths:
