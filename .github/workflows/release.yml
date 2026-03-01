@@ -9,104 +9,66 @@ permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  release:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install Python dependencies
+      - name: Build CLI
         run: |
-          python -m pip install --upgrade pip
           pip install pyinstaller
           pip install -e .
-
-      - name: Build CLI with PyInstaller
-        run: |
           pyinstaller --onefile --name AutoHound --icon assets/autohound.ico autohound/cli.py
 
-      - name: Set up Node.js 20
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: installer/package-lock.json
 
-      - name: Install installer dependencies
-        working-directory: installer
+      - name: Build Installer
         run: |
-          npm ci --prefer-offline --no-audit --no-fund
-        env:
-          npm_config_cache: ${{ runner.temp }}/npm-cache
-
-      - name: Build Electron installer
-        working-directory: installer
-        run: |
+          cd installer
+          npm install
           npm run build
-        env:
-          npm_config_cache: ${{ runner.temp }}/npm-cache
-          DEBUG: electron-builder
 
-      - name: List build output
-        run: |
-          dir installer\dist\
-        shell: cmd
+      - name: Publish Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "dist/AutoHound.exe,installer/dist/AutoHound_Setup.exe"
+          name: "AutoHound ${{ github.ref_name }}"
+          draft: false
+          prerelease: false
+          makeLatest: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            ## AutoHound ${{ github.ref_name }}
 
-      - name: List build artifacts
-        run: |
-          Write-Host "=== CLI Artifacts ===" -ForegroundColor Cyan
-          Get-ChildItem dist/ | Format-Table Name, Length
-          Write-Host ""
-          Write-Host "=== Installer Artifacts ===" -ForegroundColor Cyan
-          Get-ChildItem installer/dist/ | Format-Table Name, Length
-        shell: pwsh
+            AI-Powered Active Directory Attack Path Analysis by ACH Research Division.
 
-      - name: Rename installer exe
-        run: |
-          $installerPath = Get-ChildItem "installer/dist/*.exe" | Select-Object -First 1
-          if ($installerPath) {
-            $newName = "AutoHound_Setup.exe"
-            Move-Item $installerPath.FullName "installer/dist/$newName" -Force
-            Write-Host "Renamed to: $newName"
-          }
-        shell: pwsh
+            ### Downloads
+            | File | Description |
+            |------|-------------|
+            | AutoHound_Setup.exe | Full GUI installer — recommended |
+            | AutoHound.exe | CLI standalone |
 
-      - name: Create Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create ${{ github.ref_name }} \
-            dist/AutoHound.exe \
-            installer/dist/AutoHound_Setup.exe \
-            --title "AutoHound ${{ github.ref_name }}" \
-            --latest \
-            --notes "## AutoHound ${{ github.ref_name }}
+            ### Requirements
+            - Windows 10/11 x64
+            - Docker Desktop
+            - Anthropic API key (console.anthropic.com)
 
-          AI-Powered Active Directory Attack Path Analysis by ACH Research Division.
+            ### Quick Start
+            1. Run AutoHound_Setup.exe
+            2. Enter your Anthropic API key
+            3. Open http://localhost:8080
 
-          ### Downloads
-          | File | Description |
-          |------|-------------|
-          | AutoHound_Setup.exe | Full GUI installer — recommended |
-          | AutoHound.exe | CLI standalone |
+            BloodHound CE login: username admin, password shown in installer terminal output.
 
-          ### Requirements
-          - Windows 10/11 x64
-          - Docker Desktop
-          - Anthropic API key (console.anthropic.com)
-
-          ### Quick Start
-          1. Run AutoHound_Setup.exe
-          2. Enter your Anthropic API key
-          3. Open http://localhost:8080
-
-          BloodHound CE default login: username admin, password shown in installer terminal output.
-
-          ---
-          © 2026 Gordon Prescott — ACH Research Division. All rights reserved."
+            ---
+            © 2026 Gordon Prescott — ACH Research Division. All rights reserved.
