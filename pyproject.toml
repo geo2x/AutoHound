@@ -1,4 +1,4 @@
-[build-system]
+﻿[build-system]
 requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
-    {name = "Gordon P.", email = "gordon.j.prescott23@gmail.com"}
+    {name = "Gordon Prescott", email = "gordon.j.prescott23@gmail.com"}
 ]
 keywords = ["security", "active-directory", "penetration-testing", "red-team", "autohound", "llm", "ach"]
 classifiers = [

@@ -2,11 +2,22 @@
 
 **Active Directory Attack Path Intelligence Engine**
 
+![GitHub release](https://img.shields.io/github/v/release/geo2x/AutoHound)
+![Downloads](https://img.shields.io/github/downloads/geo2x/AutoHound/total)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![License](https://img.shields.io/badge/License-Proprietary-red.svg)
 [![TLP:WHITE](https://img.shields.io/badge/TLP-WHITE-white.svg)](https://www.cisa.gov/tlp)
 
-AutoHound is an open-source offensive security research tool that augments [BloodHound Community Edition](https://github.com/SpecterOps/BloodHound) with a large language model (LLM) reasoning layer. It automatically analyzes Active Directory relationship graphs, surfaces non-obvious attack paths that standard queries miss, and generates executable command sequences mapped to MITRE ATT&CK.
+AutoHound feeds BloodHound data into Claude to surface attack paths standard queries miss.
+
+**what it finds that BloodHound queries miss**
+- multi-hop ACL chains across OU inheritance boundaries
+- shadow admin paths via GPO delegation
+- Kerberos delegation combinations
+- cross-trust abuse chains
+
+**authorized environments only**  
+© 2026 Gordon Prescott — ACH Research Division
 
 ![AutoHound Workflow](docs/workflow.png)
 
@@ -45,13 +56,21 @@ It operates **exclusively** on pre-collected BloodHound JSON data or a local Neo
 **Classification:** TLP:WHITE - Shareable within the security research community  
 **Use Restriction:** Authorized lab and engagement environments only
 
-## 🚀 Quick Start
+## Download
+
+**[AutoHound-v0.1.0-windows-x64.exe](#)** — Windows standalone, no install needed  
+**[Source tarball](#)** — pip installable  
+[View all releases →](https://github.com/geo2x/AutoHound/releases)
+
+---
+
+## Quick Start
 
 ### Prerequisites
 
-- Python 3.11 or higher
-- Anthropic API key ([get one here](https://console.anthropic.com/))
-- BloodHound data (JSON export or Neo4j database)
+- Python 3.11+
+- Anthropic API key
+- BloodHound JSON export
 
 ### Installation
 
@@ -231,14 +250,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-**Author:** Gordon P.  
+**Author:** Gordon Prescott  
 **Security Researcher** | Google Cybersecurity Certified | CompTIA CySA+ (In Progress)  
-**GitHub:** [@geo2x](https://github.com/geo2x)  
-**Email:** gordon.j.prescott23@gmail.com
+**GitHub:** [@geo2x](https://github.com/geo2x)
 
-**Background:** Self-taught security researcher with hands-on experience in penetration testing, malware analysis, and Active Directory exploitation. Building this project to demonstrate offensive security automation capabilities for junior to mid-level red team positions.
-
-**Target Role:** Red Team Operator / Penetration Tester specializing in Active Directory environments
+**Background:** Security researcher specializing in Active Directory attack automation and offensive tooling development.
 
 ---
 

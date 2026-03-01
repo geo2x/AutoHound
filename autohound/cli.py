@@ -32,17 +32,17 @@ BANNER = f"""
 /_/  |_\____/_/ /_/   v{__version__}
                       
 ╔══════════════════════════════════════════════════════════════╗
-║  AutoHound - Active Directory Attack Path Intelligence  ║
+║  AutoHound — Attack Path Intelligence Engine                ║
 ║  [ACH] Automated Compromise Hunter                          ║
 ║                                                              ║
-║  > Analyzing graph relationships...                         ║
-║  > Identifying privilege escalation vectors...              ║
-║  > Mapping attack paths to Domain Admin...                  ║
+║  > analyzing graph relationships                            ║
+║  > identifying privilege escalation vectors                 ║
+║  > mapping attack paths to domain admin                     ║
 ║                                                              ║
-║  ⚠️  TLP:WHITE - Authorized Testing Only                    ║
+║  ⚠️  authorized testing only                                ║
 ╚══════════════════════════════════════════════════════════════╝
 
-[*] Initializing ACH module...
+[*] initializing...
 """
 
 
