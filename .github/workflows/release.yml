@@ -66,9 +66,12 @@ jobs:
         shell: pwsh
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.0.4
         with:
           name: AutoHound ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          make_latest: true
           body: |
             ## AutoHound ${{ github.ref_name }}
 
@@ -116,5 +119,3 @@ jobs:
           files: |
             dist/AutoHound.exe
             installer/dist/AutoHound_Setup.exe
-          draft: false
-          prerelease: false
