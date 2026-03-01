@@ -1,46 +1,100 @@
-name: release
+name: Release
 
 on:
   push:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write
+
 jobs:
-  build:
+  build-and-release:
     runs-on: windows-latest
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       
-      - name: setup python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       
-      - name: install dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
+          pip install -r requirements.txt
           pip install pyinstaller build
       
-      - name: build exe
+      - name: Build standalone exe
         run: |
-          pyinstaller --onefile --name autohound --icon installer/assets/autohound.ico autohound/cli.py
+          pyinstaller --onefile --name AutoHound --console autohound/cli.py
       
-      - name: build python package
+      - name: Build Python packages
         run: python -m build
       
-      - name: create source zip
+      - name: Create source archive
         run: |
-          git archive --format=zip --output=autohound-source.zip HEAD
+          $version = "${{ github.ref_name }}"
+          git archive --format=zip --output="AutoHound-$version-source.zip" HEAD
+        shell: pwsh
       
-      - name: create release
-        uses: softprops/action-gh-release@v1
+      - name: Rename exe
+        run: |
+          $version = "${{ github.ref_name }}"
+          Move-Item dist/AutoHound.exe "dist/AutoHound-$version-windows-x64.exe"
+        shell: pwsh
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
+          name: "AutoHound ${{ github.ref_name }}"
+          body: |
+            ## AutoHound ${{ github.ref_name }}
+            
+            LLM-powered Active Directory attack path analysis.
+            
+            **what it does**
+            - feeds BloodHound data into Claude
+            - surfaces privilege escalation chains your queries miss
+            - outputs ATT&CK-mapped commands (PowerView, Impacket, Rubeus)
+            
+            **requirements**
+            - Anthropic API key (get at console.anthropic.com)
+            - BloodHound JSON export from SharpHound
+            - Python 3.11+ (for source install)
+            
+            **quickstart — windows exe**
+            ```powershell
+            # download AutoHound-${{ github.ref_name }}-windows-x64.exe
+            # create .env file with: ANTHROPIC_API_KEY=your_key
+            .\AutoHound.exe --input bloodhound_data.json --output ./reports
+            ```
+            
+            **quickstart — pip install**
+            ```bash
+            pip install autohound
+            # or: pip install AutoHound-${{ github.ref_name }}.tar.gz
+            
+            # create .env with API key
+            autohound --input bloodhound_data.json --output ./reports
+            ```
+            
+            **what you get**
+            - markdown report with attack paths, commands, ATT&CK mapping
+            - attack_navigator_layer.json (import at mitre-attack.github.io/attack-navigator/)
+            
+            ---
+            
+            **authorized environments only**
+            © 2026 Gordon Prescott — ACH Research Division
           files: |
-            dist/autohound.exe
+            dist/AutoHound-${{ github.ref_name }}-windows-x64.exe
             dist/*.tar.gz
             dist/*.whl
-            autohound-source.zip
-          generate_release_notes: true
+            AutoHound-${{ github.ref_name }}-source.zip
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
