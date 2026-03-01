@@ -22,14 +22,6 @@ logger = logging.getLogger(__name__)
 class LLMEngine:
     """LLM-powered attack path reasoning engine."""
     
-    # Model priority order - best to least preferred
-    MODEL_PRIORITY = [
-        "claude-3-5-sonnet-20241022",
-        "claude-3-5-sonnet-20240620",
-        "claude-3-sonnet-20240229",
-        "claude-3-haiku-20240307",
-    ]
-    
     DISCOVERY_SYSTEM_PROMPT = """You are an expert red team operator analyzing Active Directory environments.
 
 Your task is to identify novel, high-value attack paths from the BloodHound data provided.
@@ -126,30 +118,58 @@ Return the enriched path in the same JSON format with added fields:
     
     def _detect_best_model(self) -> str:
         """
-        Detect the best available Claude model from the priority list.
+        Detect the best available Claude model by querying Anthropic API.
         
         Returns:
             Model ID of the best available model
         """
-        logger.debug("Auto-detecting best available Claude model...")
-        
-        for model in self.MODEL_PRIORITY:
-            try:
-                # Test with minimal request
-                self.client.messages.create(
-                    model=model,
-                    max_tokens=10,
-                    messages=[{"role": "user", "content": "test"}]
-                )
-                logger.debug(f"Model {model} is available")
-                return model
-            except Exception as e:
-                logger.debug(f"Model {model} not available: {str(e)[:100]}")
-                continue
-        
-        # Fallback to first in list if none work (will fail with clear error)
-        logger.warning("No models in priority list available, using fallback")
-        return self.MODEL_PRIORITY[0]
+        try:
+            # Fetch all models available to this API key right now
+            models = self.client.models.list()
+            available = [m.id for m in models.data]
+            
+            if not available:
+                raise ValueError("no models returned from API")
+            
+            # Score models by capability — higher is better
+            def score(model_id: str) -> int:
+                m = model_id.lower()
+                # penalize haiku and small models
+                if "haiku" in m:
+                    return 1
+                if "instant" in m:
+                    return 1
+                # reward by version number
+                score_val = 0
+                if "claude-4" in m or "claude-sonnet-4" in m:
+                    score_val += 100
+                if "claude-3-7" in m:
+                    score_val += 80
+                if "claude-3-5" in m:
+                    score_val += 70
+                if "claude-3" in m:
+                    score_val += 50
+                # reward sonnet over other mid tiers
+                if "sonnet" in m:
+                    score_val += 20
+                if "opus" in m:
+                    score_val += 30
+                # future proofing — any higher version numbers score high
+                import re
+                version = re.findall(r'claude-(\d+)', m)
+                if version:
+                    score_val += int(version[0]) * 25
+                return score_val
+            
+            best = max(available, key=score)
+            print(f"[autohound] available models: {available}")
+            print(f"[autohound] selected: {best}")
+            return best
+            
+        except Exception as e:
+            print(f"[autohound] model detection failed: {e}")
+            print("[autohound] falling back to claude-3-haiku-20240307")
+            return "claude-3-haiku-20240307"
     
     def discover_paths(self, graph_description: str) -> List[AttackPath]:
         """
