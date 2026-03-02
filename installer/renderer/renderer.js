@@ -471,14 +471,19 @@ function showApiKeyError() {
     const apiKey = apiKeyInput.value.trim();
     
     if (apiKey && apiKey.startsWith('sk-ant-')) {
-      const fs = require('fs');
-      const path = require('path');
-      const envPath = path.join(process.cwd(), '.env');
-      
       try {
-        fs.writeFileSync(envPath, `ANTHROPIC_API_KEY=${apiKey}\n`);
-        errorContainer.style.display = 'none';
-        await runSystemCheck();
+        // Call the IPC handler to save the API key
+        const result = await ipcRenderer.invoke('save-apikey', { apiKey });
+        
+        if (result.success) {
+          errorContainer.style.display = 'none';
+          // Recheck the system to verify the API key was saved
+          await runSystemCheck();
+        } else {
+          validationDiv.textContent = '[ ERROR ] - Failed to save: ' + (result.error || 'Unknown error');
+          validationDiv.className = 'api-key-validation invalid';
+          validationDiv.style.display = 'block';
+        }
       } catch (error) {
         validationDiv.textContent = '[ ERROR ] - Failed to save: ' + error.message;
         validationDiv.className = 'api-key-validation invalid';
@@ -810,6 +815,11 @@ document.getElementById('btn-launch')?.addEventListener('click', async () => {
 document.getElementById('btn-docs')?.addEventListener('click', async () => {
   const { ipcRenderer } = require('electron');
   await ipcRenderer.invoke('open-url', 'https://github.com/geo2x/AutoHound');
+});
+
+document.getElementById('btn-finish')?.addEventListener('click', async () => {
+  const { ipcRenderer } = require('electron');
+  await ipcRenderer.invoke('close-window');
 });
 
 // Initialize on load

@@ -10,10 +10,11 @@
   },
   "build": {
     "appId": "io.ach.autohound",
-    "productName": "AutoHound",
+    "productName": "AutoHound Setup",
     "win": {
       "target": "nsis",
-      "icon": "assets/autohound.ico"
+      "icon": "assets/autohound.ico",
+      "artifactName": "AutoHound_Setup.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -22,8 +23,17 @@
       "installerHeaderIcon": "assets/autohound.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "AutoHound"
-    }
+      "shortcutName": "AutoHound Setup",
+      "artifactName": "AutoHound_Setup.exe",
+      "runAfterFinish": false
+    },
+    "extraResources": [
+      {
+        "from": "../",
+        "to": "app",
+        "filter": ["**/*", "!installer/**", "!dist/**", "!venv/**", "!node_modules/**", "!.git/**", "!*.egg-info/**", "!__pycache__/**", "!test_output/**", "!docs/**", "!examples/**"]
+      }
+    ]
   },
   "devDependencies": {
     "electron": "^28.0.0",

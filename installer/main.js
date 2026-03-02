@@ -193,10 +193,36 @@ ipcMain.handle('check-disk-space', async () => {
   return { success: true, freeSpaceGB: 'Unknown' }
 })
 
+// ── GET PROJECT DIR ───────────────────────────────────────
+function getProjectDir() {
+  // When running in development: installer/../
+  // When running in production: resources/app/app/
+  const devPath = path.join(__dirname, '..')
+  const prodPath = process.resourcesPath 
+    ? path.join(process.resourcesPath, 'app')
+    : devPath
+  
+  // Check if we're in production by looking for pyproject.toml
+  const testProdPath = path.join(prodPath, 'pyproject.toml')
+  const testDevPath = path.join(devPath, 'pyproject.toml')
+  
+  if (fs.existsSync(testProdPath)) {
+    console.log('[getProjectDir] using production path:', prodPath)
+    return prodPath
+  } else if (fs.existsSync(testDevPath)) {
+    console.log('[getProjectDir] using dev path:', devPath)
+    return devPath
+  } else {
+    console.log('[getProjectDir] pyproject.toml not found, defaulting to dev path')
+    return devPath
+  }
+}
+
 // ── CHECK API KEY ─────────────────────────────────────────
 ipcMain.handle('check-api-key', async () => {
   try {
-    const envPath = path.join(__dirname, '..', '.env')
+    const projectDir = getProjectDir()
+    const envPath = path.join(projectDir, '.env')
     if (!fs.existsSync(envPath)) return { success: false }
     const content = fs.readFileSync(envPath, 'utf8')
     const match = content.match(/^ANTHROPIC_API_KEY=sk-ant-.+$/m)
@@ -209,7 +235,7 @@ ipcMain.handle('check-api-key', async () => {
 // ── INSTALL AUTOHOUND ─────────────────────────────────────
 ipcMain.handle('install-autohound', async (event) => {
   console.log('[install-autohound] starting')
-  const projectDir = path.join(__dirname, '..')
+  const projectDir = getProjectDir()
   console.log('[install-autohound] project dir:', projectDir)
 
   return new Promise((resolve) => {
@@ -260,7 +286,7 @@ ipcMain.handle('install-autohound', async (event) => {
 ipcMain.handle('verify-autohound', async () => {
   console.log('[verify-autohound] starting')
   
-  const projectDir = path.join(__dirname, '..')
+  const projectDir = getProjectDir()
   
   // Try autohound directly
   let result = await safeExec('autohound', ['--version'], 8000)
@@ -345,11 +371,34 @@ ipcMain.handle('verify-autohound', async () => {
 ipcMain.handle('save-apikey', async (event, args) => {
   console.log('[save-apikey] starting')
   try {
-    const envPath = path.join(__dirname, '..', '.env')
-    // Just mark as success - API key is optional
+    const projectDir = getProjectDir()
+    const envPath = path.join(projectDir, '.env')
+    const envExamplePath = path.join(projectDir, '.env.example')
+    
+    // Create .env from .env.example if it doesn't exist
+    if (!fs.existsSync(envPath) && fs.existsSync(envExamplePath)) {
+      fs.copyFileSync(envExamplePath, envPath)
+    }
+    
+    // If API key provided, write it
+    if (args && args.apiKey) {
+      let content = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : ''
+      
+      // Update or add ANTHROPIC_API_KEY
+      if (content.includes('ANTHROPIC_API_KEY=')) {
+        content = content.replace(/ANTHROPIC_API_KEY=.*/g, `ANTHROPIC_API_KEY=${args.apiKey}`)
+      } else {
+        content += `\nANTHROPIC_API_KEY=${args.apiKey}\n`
+      }
+      
+      fs.writeFileSync(envPath, content, 'utf8')
+      console.log('[save-apikey] API key saved')
+    }
+    
     return { success: true }
   } catch (e) {
-    return { success: true, error: e.message }
+    console.log('[save-apikey] error:', e.message)
+    return { success: false, error: e.message }
   }
 })
 
