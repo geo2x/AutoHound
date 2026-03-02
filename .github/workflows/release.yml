@@ -26,6 +26,8 @@ jobs:
           pip install pyinstaller
           pip install -e .
           pyinstaller --onefile --name AutoHound --icon assets/autohound.ico autohound/cli.py
+          dir dist
+        shell: pwsh
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -37,7 +39,29 @@ jobs:
           cd installer
           npm install
           npm run build
-        shell: cmd
+          dir dist
+        shell: pwsh
+
+      - name: Verify Build Artifacts
+        run: |
+          Write-Host "=== Verifying build artifacts ===" -ForegroundColor Yellow
+          if (Test-Path "dist/AutoHound.exe") {
+            Write-Host "[OK] CLI found: dist/AutoHound.exe" -ForegroundColor Green
+            Get-Item "dist/AutoHound.exe" | Format-List Name, Length
+          } else {
+            Write-Host "[ERROR] CLI not found!" -ForegroundColor Red
+            exit 1
+          }
+          if (Test-Path "installer/dist/AutoHound_Setup.exe") {
+            Write-Host "[OK] Installer found: installer/dist/AutoHound_Setup.exe" -ForegroundColor Green
+            Get-Item "installer/dist/AutoHound_Setup.exe" | Format-List Name, Length
+          } else {
+            Write-Host "[ERROR] Installer not found!" -ForegroundColor Red
+            Write-Host "Contents of installer/dist/:" -ForegroundColor Yellow
+            Get-ChildItem "installer/dist" -ErrorAction SilentlyContinue
+            exit 1
+          }
+        shell: pwsh
 
       - name: Publish Release
         uses: ncipollo/release-action@v1
