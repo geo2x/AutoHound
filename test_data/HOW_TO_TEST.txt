@@ -1,0 +1,265 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     AUTOHOUND TESTING GUIDE                                  ║
+║                  AI-Powered Attack Path Analysis                             ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📁 TEST DATA FILES
+═══════════════════════════════════════════════════════════════════════════════
+
+This folder contains realistic sample BloodHound data for testing AutoHound:
+
+1. sample1_kerberoasting.json
+   - Domain: CORP.LOCAL
+   - Attack vectors: Kerberoasting, ACL abuse (GenericAll, WriteDacl)
+   - Key targets: SQL service account with SPN, privilege escalation chains
+
+2. sample2_delegation.json
+   - Domain: CONTOSO.COM
+   - Attack vectors: Unconstrained/constrained delegation, resource-based delegation
+   - Key targets: Web server with unconstrained delegation, ACL vulnerabilities
+
+3. sample3_acl_abuse.json
+   - Domain: MEGACORP.NET
+   - Attack vectors: Complex ACL chains, GPO abuse, DCSync rights
+   - Key targets: Multi-hop privilege escalation, GPO modification paths
+
+
+🚀 QUICK START
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: Set your Anthropic API key
+   
+   Option A - Environment variable (recommended):
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │ Windows (PowerShell):                                                   │
+   │   $env:ANTHROPIC_API_KEY = "sk-ant-your-key-here"                      │
+   │                                                                         │
+   │ Windows (Command Prompt):                                              │
+   │   set ANTHROPIC_API_KEY=sk-ant-your-key-here                           │
+   │                                                                         │
+   │ Linux/macOS:                                                           │
+   │   export ANTHROPIC_API_KEY=sk-ant-your-key-here                       │
+   └─────────────────────────────────────────────────────────────────────────┘
+
+   Option B - Use --api-key flag:
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │   autohound -i sample1_kerberoasting.json --api-key sk-ant-your-key    │
+   └─────────────────────────────────────────────────────────────────────────┘
+
+STEP 2: Run AutoHound on sample data
+   
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │   cd test_data                                                          │
+   │   autohound -i sample1_kerberoasting.json -o ./reports                 │
+   └─────────────────────────────────────────────────────────────────────────┘
+
+STEP 3: Review the generated reports
+   
+   - Markdown Report: test_data/reports/autohound_report.md
+   - ATT&CK Navigator: test_data/reports/attack_navigator_layer.json
+   
+   Import the ATT&CK Navigator JSON at:
+   https://mitre-attack.github.io/attack-navigator/
+
+
+📋 DETAILED TESTING SCENARIOS
+═══════════════════════════════════════════════════════════════════════════════
+
+TEST 1: Basic Kerberoasting Attack Path
+────────────────────────────────────────────────────────────────────────────────
+File: sample1_kerberoasting.json
+
+Command:
+  autohound -i sample1_kerberoasting.json -o ./reports/test1
+
+Expected Results:
+  ✓ Identifies SQL service account (SQLSERVICE@CORP.LOCAL) with SPN
+  ✓ Detects GenericAll permissions on Enterprise Admins group
+  ✓ Maps privilege escalation chain: user → kerberoast → compromise
+  ✓ Generates MITRE ATT&CK mapping (T1558.003 - Kerberoasting)
+
+Attack Path Preview:
+  JDOE (IT Support) → ForceChangePassword → WEBADMIN
+  → GenericAll/WriteDacl → Enterprise Admins → Domain Compromise
+
+
+TEST 2: Delegation-Based Attacks
+────────────────────────────────────────────────────────────────────────────────
+File: sample2_delegation.json
+
+Command:
+  autohound -i sample2_delegation.json -o ./reports/test2 --log-level DEBUG
+
+Expected Results:
+  ✓ Detects WEB01 with unconstrained delegation
+  ✓ Identifies constrained delegation on APP01
+  ✓ Finds resource-based constrained delegation (RBCD) opportunities
+  ✓ Maps privilege escalation via delegation abuse
+
+Attack Path Preview:
+  HELPDESK → GenericAll on SVCACCOUNT
+  → Compromise WEB01 (unconstrained delegation)
+  → Capture domain admin TGT → DC compromise
+
+
+TEST 3: Complex ACL Chains & GPO Abuse
+────────────────────────────────────────────────────────────────────────────────
+File: sample3_acl_abuse.json
+
+Command:
+  autohound -i sample3_acl_abuse.json -o ./reports/test3
+
+Expected Results:
+  ✓ Identifies DCSync rights on DCSYNC@MEGACORP.NET
+  ✓ Detects GPO write permissions leading to domain compromise
+  ✓ Maps multi-hop ACL abuse chains (GenericWrite → ForceChangePassword → AddMember)
+  ✓ Finds privilege escalation via Account Operators group
+
+Attack Path Preview:
+  CHARLIE → GenericAll on Account Operators
+  → Create privileged accounts → Domain Admins
+  
+  BOB → ForceChangePassword on ALICE
+  → WriteDacl on Domain Admins → Add self to DA group
+
+  GPOOWNER → WriteOwner on Default Domain Policy GPO
+  → Modify GPO → Execute code on all domain computers
+
+
+⚙️  ADVANCED USAGE
+═══════════════════════════════════════════════════════════════════════════════
+
+Test with specific Claude model:
+  autohound -i sample1_kerberoasting.json --model claude-3-5-sonnet-20241022
+
+Skip authorization check (for automation):
+  autohound -i sample2_delegation.json --skip-auth-check -o ./reports
+
+Enable debug logging for troubleshooting:
+  autohound -i sample3_acl_abuse.json --log-level DEBUG
+
+Test all samples at once (PowerShell):
+  Get-ChildItem *.json | ForEach-Object {
+    autohound -i $_.Name -o "./reports/$($_.BaseName)" --skip-auth-check
+  }
+
+Test all samples at once (Bash):
+  for file in *.json; do
+    autohound -i "$file" -o "./reports/${file%.json}" --skip-auth-check
+  done
+
+
+🔍 ANALYZING REAL BLOODHOUND DATA
+═══════════════════════════════════════════════════════════════════════════════
+
+If you have your own BloodHound data collected from SharpHound:
+
+1. Collect data with SharpHound:
+   
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │ PowerShell:                                                             │
+   │   .\SharpHound.exe -c All --zipfilename bloodhound_output.zip          │
+   │                                                                         │
+   │ Or use BloodHound.py (Linux):                                          │
+   │   bloodhound-python -u user@domain.local -p password -d domain.local   │
+   │                     -ns 10.0.0.1 --zip                                 │
+   └─────────────────────────────────────────────────────────────────────────┘
+
+2. Extract the ZIP file to get JSON files
+
+3. Point AutoHound to your data:
+   
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │   autohound -i /path/to/bloodhound_data.json -o ./my_reports           │
+   └─────────────────────────────────────────────────────────────────────────┘
+
+
+📊 EXPECTED OUTPUT
+═══════════════════════════════════════════════════════════════════════════════
+
+After running AutoHound, you should see:
+
+1. Console Output:
+   - ASCII art banner
+   - Authorization check prompt (unless --skip-auth-check)
+   - Progress updates (5 steps: ingest, serialize, analyze, report, summary)
+   - Model name being used (e.g., claude-3-5-sonnet-20241022)
+   - Number of attack paths discovered
+   - Top 3 attack paths with scores
+
+2. Generated Files:
+   
+   reports/
+   ├── autohound_report.md          # Detailed markdown report
+   └── attack_navigator_layer.json  # MITRE ATT&CK Navigator import
+
+3. Report Contents:
+   - Executive summary
+   - Attack path details with step-by-step instructions
+   - Risk scores and MITRE ATT&CK technique mappings
+   - Remediation recommendations
+
+
+🐛 TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+Issue: "No module named 'autohound'"
+Solution: Install AutoHound first:
+  pip install -e .
+
+Issue: "ANTHROPIC_API_KEY not found"
+Solution: Set your API key (see STEP 1 above)
+
+Issue: "No attack paths discovered"
+Possible causes:
+  - Data file is too simple/sanitized
+  - API key issues (check logs with --log-level DEBUG)
+  - Well-hardened environment (this is good!)
+
+Issue: Rate limiting errors
+Solution: 
+  - Wait a few seconds between runs
+  - Check your Anthropic API tier/limits
+
+Issue: "Authorization not confirmed"
+Solution:
+  - Type "yes" when prompted
+  - Or use --skip-auth-check for automated testing (lab only!)
+
+
+📚 ADDITIONAL RESOURCES
+═══════════════════════════════════════════════════════════════════════════════
+
+• AutoHound Help:
+  autohound --help
+
+• BloodHound Resources:
+  https://github.com/BloodHoundAD/BloodHound
+  https://github.com/BloodHoundAD/SharpHound
+
+• MITRE ATT&CK Navigator:
+  https://mitre-attack.github.io/attack-navigator/
+
+• Anthropic API Documentation:
+  https://docs.anthropic.com/
+
+
+⚠️  LEGAL & ETHICAL USE
+═══════════════════════════════════════════════════════════════════════════════
+
+AutoHound is a security research and penetration testing tool.
+
+AUTHORIZED USE ONLY:
+  ✓ Your own lab environments (GOAD, etc.)
+  ✓ Client engagements with written authorization
+  ✓ Security research with proper permissions
+
+UNAUTHORIZED USE IS ILLEGAL:
+  ✗ Production networks without authorization
+  ✗ Networks you don't own or have permission to test
+  ✗ Any use that violates CFAA or local laws
+
+
+═══════════════════════════════════════════════════════════════════════════════
+© 2026 Gordon Prescott — ACH Research Division. All rights reserved.
+═══════════════════════════════════════════════════════════════════════════════

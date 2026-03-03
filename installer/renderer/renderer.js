@@ -770,24 +770,65 @@ async function runInstallation() {
   
   async function displayAutohoundPath() {
     const pathElement = document.getElementById('autohound-path');
+    const commandElement = document.getElementById('autohound-command');
+    const quickStartElement = document.getElementById('quick-start-command');
+    const cdPathElement = document.getElementById('cd-path');
+    const pythonCmdElement = document.getElementById('python-cmd');
+    const helpCommandElement = document.getElementById('help-command');
+    
     if (!pathElement) return;
     
     // Query the verify handler to get the path
     try {
       const result = await ipcRenderer.invoke('verify-autohound');
+      console.log('[displayAutohoundPath] result:', result);
+      
       if (result && result.success) {
-        if (result.path) {
-          pathElement.textContent = result.path;
-        } else if (result.version) {
-          pathElement.textContent = `py -m autohound (${result.version})`;
-        } else {
-          pathElement.textContent = 'Installed successfully';
+        // Display the command to use
+        if (result.command) {
+          if (commandElement) commandElement.textContent = result.command;
+          if (helpCommandElement) helpCommandElement.textContent = result.command;
+          if (quickStartElement) {
+            quickStartElement.textContent = `${result.command} -i bloodhound_data.json -o ./reports`;
+          }
+        }
+        
+        // Display installation path
+        if (result.installPath) {
+          if (pathElement) pathElement.textContent = result.installPath;
+          if (cdPathElement) cdPathElement.textContent = result.installPath;
+        }
+        
+        // Display Python command
+        if (result.pythonCmd && pythonCmdElement) {
+          pythonCmdElement.textContent = result.pythonCmd;
+        }
+        
+        // Display version
+        if (result.version && pathElement && !result.installPath) {
+          pathElement.textContent = `Installed (${result.version})`;
         }
       } else {
-        pathElement.textContent = 'Not detected (may need PATH refresh)';
+        // Installation failed or not detected
+        if (pathElement) pathElement.textContent = 'Not detected';
+        if (commandElement) commandElement.textContent = 'py -m autohound (try this)';
+        if (helpCommandElement) helpCommandElement.textContent = 'py -m autohound';
+        if (quickStartElement) {
+          quickStartElement.textContent = 'py -m autohound -i data.json -o ./reports';
+        }
+        if (result && result.installPath && cdPathElement) {
+          cdPathElement.textContent = result.installPath;
+        }
+        if (result && result.pythonCmd && pythonCmdElement) {
+          pythonCmdElement.textContent = result.pythonCmd || 'py';
+        }
       }
     } catch (e) {
-      pathElement.textContent = 'Detection failed';
+      console.error('[displayAutohoundPath] error:', e);
+      if (pathElement) pathElement.textContent = 'Detection failed';
+      if (commandElement) commandElement.textContent = 'py -m autohound';
+      if (helpCommandElement) helpCommandElement.textContent = 'py -m autohound';
+      if (quickStartElement) quickStartElement.textContent = 'py -m autohound -i data.json -o ./reports';
     }
   }
   

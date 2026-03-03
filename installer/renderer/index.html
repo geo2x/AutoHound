@@ -145,17 +145,56 @@
                         <span class="info-arrow">→</span>
                         <span class="info-value" id="bloodhound-password" style="color: #f0c040; font-weight: bold; font-size: 11px;">Check terminal below</span>
                     </div>
-                    <div class="info-line" id="autohound-path-line">
-                        <span class="info-label">AutoHound CLI</span>
-                        <span class="info-arrow">→</span>
-                        <span class="info-value" id="autohound-path" style="font-size: 10px;">Detecting...</span>
+                </div>
+                
+                <div class="info-panel" style="margin-top: 15px; border-top: 1px solid rgba(199, 125, 255, 0.2); padding-top: 15px;">
+                    <div style="text-align: center; margin-bottom: 10px; color: #C77DFF; font-weight: bold; font-size: 12px;">
+                        ▼ AUTOHOUND CLI SETUP ▼
                     </div>
                     <div class="info-line">
-                        <span class="info-label">Quick Start</span>
+                        <span class="info-label">Installation Path</span>
                         <span class="info-arrow">→</span>
-                        <span class="info-value" style="font-size: 10px;">autohound --input data.zip</span>
+                        <span class="info-value" id="autohound-path" style="font-size: 9px;">Detecting...</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">Python Command</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" id="python-cmd" style="font-weight: bold; color: #f0c040;">py</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">AutoHound Command</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" id="autohound-command" style="font-weight: bold; color: #C77DFF;">py -m autohound</span>
+                    </div>
+                    <div class="info-line" style="margin-top: 10px; background: rgba(199, 125, 255, 0.1); padding: 8px; border-radius: 4px;">
+                        <span class="info-label" style="color: #C77DFF; font-weight: bold;">⚡ Quick Start</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" id="quick-start-command" style="font-size: 9px; font-weight: bold; color: #fff;">py -m autohound -i bloodhound_data.json -o ./reports</span>
+                    </div>
+                    <div class="info-line" style="margin-top: 8px;">
+                        <span class="info-label" style="font-size: 10px;">📂 Open Terminal Here</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" style="font-size: 9px;">cd "<span id="cd-path">...</span>"</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label" style="font-size: 10px;">📚 View Help</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" style="font-size: 9px;"><span id="help-command">py -m autohound</span> --help</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label" style="font-size: 10px;">🧪 Test Data</span>
+                        <span class="info-arrow">→</span>
+                        <span class="info-value" style="font-size: 9px;">cd test_data (sample files included)</span>
+                    </div>
+                    <div style="margin-top: 10px; padding: 8px; background: rgba(240, 192, 64, 0.1); border-left: 3px solid #f0c040; font-size: 9px; line-height: 1.4;">
+                        <div style="color: #f0c040; font-weight: bold; margin-bottom: 4px;">⚠️ IMPORTANT: Fresh Terminal Required</div>
+                        <div style="color: #ccc;">
+                            If "py -m autohound" doesn't work in your current terminal, close it and open a NEW PowerShell/Command Prompt window. 
+                            This ensures Python paths are refreshed. Then navigate to the install path above.
+                        </div>
                     </div>
                 </div>
+                
                 <div class="complete-terminal-container">
                     <div class="complete-terminal-title">BloodHound CE Startup Output (check for generated password):</div>
                     <div class="complete-terminal" id="complete-terminal">

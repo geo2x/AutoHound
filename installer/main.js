@@ -282,31 +282,67 @@ ipcMain.handle('install-autohound', async (event) => {
   })
 })
 
+// ── DETECT PYTHON COMMAND ─────────────────────────────────
+async function detectPythonCommand() {
+  // Check which Python command works: py, python, or python3
+  const commands = ['py', 'python', 'python3']
+  
+  for (const cmd of commands) {
+    const result = await safeExec(cmd, ['--version'], 3000)
+    if (result && result.includes('Python')) {
+      console.log('[detectPythonCommand] found:', cmd, '→', result)
+      return cmd
+    }
+  }
+  
+  console.log('[detectPythonCommand] no python found')
+  return null
+}
+
 // ── VERIFY AUTOHOUND ──────────────────────────────────────
 ipcMain.handle('verify-autohound', async () => {
   console.log('[verify-autohound] starting')
   
   const projectDir = getProjectDir()
+  const pythonCmd = await detectPythonCommand()
   
   // Try autohound directly
   let result = await safeExec('autohound', ['--version'], 8000)
   if (result) {
     console.log('[verify-autohound] found via autohound:', result)
-    return { success: true, version: result }
+    return { 
+      success: true, 
+      version: result, 
+      command: 'autohound',
+      pythonCmd,
+      installPath: projectDir
+    }
   }
   
   // Try python -m autohound
   result = await safeExec('python', ['-m', 'autohound', '--version'], 8000)
   if (result) {
     console.log('[verify-autohound] found via python -m:', result)
-    return { success: true, version: result }
+    return { 
+      success: true, 
+      version: result, 
+      command: 'python -m autohound',
+      pythonCmd: 'python',
+      installPath: projectDir
+    }
   }
   
   // Try py -m autohound
   result = await safeExec('py', ['-m', 'autohound', '--version'], 8000)
   if (result) {
     console.log('[verify-autohound] found via py -m:', result)
-    return { success: true, version: result }
+    return { 
+      success: true, 
+      version: result, 
+      command: 'py -m autohound',
+      pythonCmd: 'py',
+      installPath: projectDir
+    }
   }
   
   // Try running cli.py directly
@@ -315,13 +351,25 @@ ipcMain.handle('verify-autohound', async () => {
   result = await safeExec('python', [cliPath, '--version'], 8000)
   if (result) {
     console.log('[verify-autohound] found via cli.py (python):', result)
-    return { success: true, version: result }
+    return { 
+      success: true, 
+      version: result, 
+      command: `python "${cliPath}"`,
+      pythonCmd: 'python',
+      installPath: projectDir
+    }
   }
   
   result = await safeExec('py', [cliPath, '--version'], 8000)
   if (result) {
     console.log('[verify-autohound] found via cli.py (py):', result)
-    return { success: true, version: result }
+    return { 
+      success: true, 
+      version: result, 
+      command: `py "${cliPath}"`,
+      pythonCmd: 'py',
+      installPath: projectDir
+    }
   }
   
   // Try scripts folder
@@ -343,9 +391,23 @@ ipcMain.handle('verify-autohound', async () => {
       if (fs.existsSync(sp)) {
         console.log('[verify-autohound] found at:', sp)
         result = await safeExec(sp, ['--version'], 8000)
-        if (result) return { success: true, version: result, path: sp }
+        if (result) return { 
+          success: true, 
+          version: result, 
+          path: sp, 
+          command: 'autohound',
+          pythonCmd,
+          installPath: projectDir
+        }
         // Found the exe but version flag fails — still count as success
-        return { success: true, version: 'installed', path: sp }
+        return { 
+          success: true, 
+          version: 'installed', 
+          path: sp, 
+          command: 'autohound',
+          pythonCmd,
+          installPath: projectDir
+        }
       }
     } catch(e) {}
   }
@@ -354,17 +416,34 @@ ipcMain.handle('verify-autohound', async () => {
   result = await safeExec('python', ['-c', 'import autohound; print("ok")'], 5000)
   if (result && result.includes('ok')) {
     console.log('[verify-autohound] import ok via python')
-    return { success: true, version: 'installed (import ok)' }
+    return { 
+      success: true, 
+      version: 'installed (import ok)', 
+      command: 'python -m autohound',
+      pythonCmd: 'python',
+      installPath: projectDir
+    }
   }
   
   result = await safeExec('py', ['-c', 'import autohound; print("ok")'], 5000)
   if (result && result.includes('ok')) {
     console.log('[verify-autohound] import ok via py')
-    return { success: true, version: 'installed (import ok)' }
+    return { 
+      success: true, 
+      version: 'installed (import ok)', 
+      command: 'py -m autohound',
+      pythonCmd: 'py',
+      installPath: projectDir
+    }
   }
   
   console.log('[verify-autohound] not found anywhere')
-  return { success: false, error: 'AutoHound not found after installation' }
+  return { 
+    success: false, 
+    error: 'AutoHound not found after installation',
+    pythonCmd,
+    installPath: projectDir
+  }
 })
 
 // ── SAVE API KEY ──────────────────────────────────────────

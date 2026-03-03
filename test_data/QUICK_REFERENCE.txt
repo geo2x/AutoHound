@@ -1,0 +1,128 @@
+═══════════════════════════════════════════════════════════════════════════════
+                        AUTOHOUND QUICK REFERENCE
+═══════════════════════════════════════════════════════════════════════════════
+
+📌 BASIC COMMANDS
+═══════════════════════════════════════════════════════════════════════════════
+
+Help & Version:
+  autohound --help
+  autohound --version
+
+Analyze BloodHound JSON:
+  autohound -i sample1_kerberoasting.json
+  autohound --input sample1_kerberoasting.json -o ./reports
+
+Analyze from Neo4j:
+  autohound --neo4j-uri bolt://localhost:7687 --neo4j-password mypass -o ./reports
+
+
+📌 COMMON OPTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+-i, --input PATH              BloodHound JSON file (REQUIRED)
+-o, --output PATH             Output directory (default: ./reports)
+--api-key TEXT                Anthropic API key
+--model TEXT                  Claude model (auto-detects if not specified)
+--skip-auth-check             Skip authorization prompt
+--log-level [DEBUG|INFO|WARNING|ERROR]
+--neo4j-uri TEXT              Neo4j database URI
+--neo4j-user TEXT             Neo4j username (default: neo4j)
+--neo4j-password TEXT         Neo4j password
+
+
+📌 QUICK TEST COMMANDS
+═══════════════════════════════════════════════════════════════════════════════
+
+Test Sample 1 (Kerberoasting):
+  autohound -i sample1_kerberoasting.json -o ./reports/test1 --skip-auth-check
+
+Test Sample 2 (Delegation):
+  autohound -i sample2_delegation.json -o ./reports/test2 --skip-auth-check
+
+Test Sample 3 (ACL Abuse):
+  autohound -i sample3_acl_abuse.json -o ./reports/test3 --skip-auth-check
+
+Test with Debug Logging:
+  autohound -i sample1_kerberoasting.json --log-level DEBUG
+
+Test with Specific Model:
+  autohound -i sample2_delegation.json --model claude-3-5-sonnet-20241022
+
+
+📌 BATCH TESTING
+═══════════════════════════════════════════════════════════════════════════════
+
+PowerShell (Windows):
+  Get-ChildItem *.json | ForEach-Object {
+    autohound -i $_.Name -o "./reports/$($_.BaseName)" --skip-auth-check
+  }
+
+Bash (Linux/macOS):
+  for file in *.json; do
+    autohound -i "$file" -o "./reports/${file%.json}" --skip-auth-check
+  done
+
+
+📌 ENVIRONMENT VARIABLES
+═══════════════════════════════════════════════════════════════════════════════
+
+Set API Key (recommended):
+
+  PowerShell:
+    $env:ANTHROPIC_API_KEY = "sk-ant-your-key-here"
+  
+  Command Prompt:
+    set ANTHROPIC_API_KEY=sk-ant-your-key-here
+  
+  Bash:
+    export ANTHROPIC_API_KEY=sk-ant-your-key-here
+
+
+📌 OUTPUT FILES
+═══════════════════════════════════════════════════════════════════════════════
+
+After running AutoHound, check:
+  ./reports/autohound_report.md          ← Detailed analysis
+  ./reports/attack_navigator_layer.json  ← MITRE ATT&CK layer
+
+Import Navigator layer at:
+  https://mitre-attack.github.io/attack-navigator/
+
+
+📌 TYPICAL WORKFLOW
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Set API key:
+   $env:ANTHROPIC_API_KEY = "sk-ant-..."
+
+2. Run AutoHound:
+   autohound -i sample1_kerberoasting.json -o ./reports
+
+3. Confirm authorization:
+   Type "yes" when prompted
+
+4. Review reports:
+   Open ./reports/autohound_report.md
+
+5. Import to ATT&CK Navigator:
+   Upload ./reports/attack_navigator_layer.json
+
+
+📌 TROUBLESHOOTING COMMANDS
+═══════════════════════════════════════════════════════════════════════════════
+
+Check if AutoHound is installed:
+  autohound --version
+  py -m autohound --version
+
+Verbose debugging:
+  autohound -i sample1_kerberoasting.json --log-level DEBUG 2>&1 | Tee-Object debug.log
+
+Test API key without analysis:
+  python -c "import anthropic; print(anthropic.Anthropic().models.list())"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+For detailed documentation, see HOW_TO_TEST.txt
+═══════════════════════════════════════════════════════════════════════════════
