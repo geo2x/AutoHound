@@ -1,0 +1,184 @@
+{
+  "data": [
+    {
+      "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-500",
+      "Kind": "User",
+      "Properties": {
+        "name": "ADMINISTRATOR@CORP.LOCAL",
+        "displayname": "Administrator",
+        "domain": "CORP.LOCAL",
+        "enabled": true,
+        "admincount": true,
+        "distinguishedname": "CN=Administrator,CN=Users,DC=CORP,DC=LOCAL",
+        "pwdlastset": 1709251200,
+        "lastlogon": 1709337600,
+        "serviceprincipalnames": []
+      },
+      "Aces": [],
+      "AllowedToDelegate": [],
+      "SPNTargets": [],
+      "HasSIDHistory": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-512",
+      "Kind": "Group",
+      "Properties": {
+        "name": "DOMAIN ADMINS@CORP.LOCAL",
+        "domain": "CORP.LOCAL",
+        "admincount": true,
+        "distinguishedname": "CN=Domain Admins,CN=Users,DC=CORP,DC=LOCAL"
+      },
+      "Aces": [],
+      "Members": [
+        {
+          "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-500",
+          "ObjectType": "User"
+        }
+      ]
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-1104",
+      "Kind": "User",
+      "Properties": {
+        "name": "SQLSERVICE@CORP.LOCAL",
+        "displayname": "SQL Service Account",
+        "domain": "CORP.LOCAL",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=sqlservice,CN=Users,DC=CORP,DC=LOCAL",
+        "serviceprincipalnames": [
+          "MSSQLSvc/sql01.corp.local:1433",
+          "MSSQLSvc/sql01.corp.local"
+        ],
+        "pwdlastset": 1577836800,
+        "hasspn": true
+      },
+      "Aces": [],
+      "AllowedToDelegate": [],
+      "SPNTargets": [],
+      "HasSIDHistory": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-1105",
+      "Kind": "User",
+      "Properties": {
+        "name": "WEBADMIN@CORP.LOCAL",
+        "displayname": "Web Administrator",
+        "domain": "CORP.LOCAL",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=webadmin,CN=Users,DC=CORP,DC=LOCAL"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-3623811015-3361044348-30300820-1105",
+          "PrincipalType": "User",
+          "RightName": "GenericAll",
+          "IsInherited": false
+        }
+      ],
+      "AllowedToDelegate": [],
+      "SPNTargets": [],
+      "HasSIDHistory": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-519",
+      "Kind": "Group",
+      "Properties": {
+        "name": "ENTERPRISE ADMINS@CORP.LOCAL",
+        "domain": "CORP.LOCAL",
+        "admincount": true,
+        "distinguishedname": "CN=Enterprise Admins,CN=Users,DC=CORP,DC=LOCAL"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-3623811015-3361044348-30300820-1105",
+          "PrincipalType": "User",
+          "RightName": "WriteDacl",
+          "IsInherited": false
+        }
+      ],
+      "Members": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-1001",
+      "Kind": "Computer",
+      "Properties": {
+        "name": "DC01.CORP.LOCAL",
+        "domain": "CORP.LOCAL",
+        "enabled": true,
+        "distinguishedname": "CN=DC01,OU=Domain Controllers,DC=CORP,DC=LOCAL",
+        "unconstraineddelegation": false,
+        "operatingsystem": "Windows Server 2019"
+      },
+      "Aces": [],
+      "AllowedToDelegate": [],
+      "AllowedToAct": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-1002",
+      "Kind": "Computer",
+      "Properties": {
+        "name": "SQL01.CORP.LOCAL",
+        "domain": "CORP.LOCAL",
+        "enabled": true,
+        "distinguishedname": "CN=SQL01,CN=Computers,DC=CORP,DC=LOCAL",
+        "unconstraineddelegation": false,
+        "operatingsystem": "Windows Server 2016"
+      },
+      "Aces": [],
+      "AllowedToDelegate": [],
+      "AllowedToAct": [],
+      "Sessions": [
+        {
+          "UserSID": "S-1-5-21-3623811015-3361044348-30300820-1104"
+        }
+      ]
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-1106",
+      "Kind": "User",
+      "Properties": {
+        "name": "JDOE@CORP.LOCAL",
+        "displayname": "John Doe",
+        "domain": "CORP.LOCAL",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=John Doe,OU=IT,DC=CORP,DC=LOCAL"
+      },
+      "Aces": [],
+      "AllowedToDelegate": [],
+      "SPNTargets": [],
+      "HasSIDHistory": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-1107",
+      "Kind": "Group",
+      "Properties": {
+        "name": "IT SUPPORT@CORP.LOCAL",
+        "domain": "CORP.LOCAL",
+        "admincount": false,
+        "distinguishedname": "CN=IT Support,OU=Groups,DC=CORP,DC=LOCAL"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-3623811015-3361044348-30300820-1107",
+          "PrincipalType": "Group",
+          "RightName": "ForceChangePassword",
+          "IsInherited": false
+        }
+      ],
+      "Members": [
+        {
+          "ObjectIdentifier": "S-1-5-21-3623811015-3361044348-30300820-1106",
+          "ObjectType": "User"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "type": "sessions",
+    "count": 9,
+    "version": 5
+  }
+}

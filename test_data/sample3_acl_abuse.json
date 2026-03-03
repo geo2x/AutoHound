@@ -1,0 +1,236 @@
+{
+  "data": [
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-500",
+      "Kind": "User",
+      "Properties": {
+        "name": "ADMINISTRATOR@MEGACORP.NET",
+        "displayname": "Administrator",
+        "domain": "MEGACORP.NET",
+        "enabled": true,
+        "admincount": true,
+        "distinguishedname": "CN=Administrator,CN=Users,DC=MEGACORP,DC=NET"
+      },
+      "Aces": [],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-512",
+      "Kind": "Group",
+      "Properties": {
+        "name": "DOMAIN ADMINS@MEGACORP.NET",
+        "domain": "MEGACORP.NET",
+        "admincount": true,
+        "distinguishedname": "CN=Domain Admins,CN=Users,DC=MEGACORP,DC=NET"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-1111111111-2222222222-3333333333-1301",
+          "PrincipalType": "User",
+          "RightName": "WriteDacl",
+          "IsInherited": false
+        }
+      ],
+      "Members": [
+        {
+          "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-500",
+          "ObjectType": "User"
+        }
+      ]
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-1301",
+      "Kind": "User",
+      "Properties": {
+        "name": "ALICE@MEGACORP.NET",
+        "displayname": "Alice Johnson",
+        "domain": "MEGACORP.NET",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=Alice Johnson,OU=HR,DC=MEGACORP,DC=NET"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-1111111111-2222222222-3333333333-1302",
+          "PrincipalType": "User",
+          "RightName": "GenericWrite",
+          "IsInherited": false
+        }
+      ],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-1302",
+      "Kind": "User",
+      "Properties": {
+        "name": "BOB@MEGACORP.NET",
+        "displayname": "Bob Smith",
+        "domain": "MEGACORP.NET",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=Bob Smith,OU=Sales,DC=MEGACORP,DC=NET"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-1111111111-2222222222-3333333333-1303",
+          "PrincipalType": "User",
+          "RightName": "ForceChangePassword",
+          "IsInherited": false
+        }
+      ],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-1303",
+      "Kind": "User",
+      "Properties": {
+        "name": "CHARLIE@MEGACORP.NET",
+        "displayname": "Charlie Davis",
+        "domain": "MEGACORP.NET",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=Charlie Davis,OU=IT,DC=MEGACORP,DC=NET"
+      },
+      "Aces": [],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-1109",
+      "Kind": "Group",
+      "Properties": {
+        "name": "ACCOUNT OPERATORS@MEGACORP.NET",
+        "domain": "MEGACORP.NET",
+        "admincount": true,
+        "distinguishedname": "CN=Account Operators,CN=Builtin,DC=MEGACORP,DC=NET"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-1111111111-2222222222-3333333333-1303",
+          "PrincipalType": "User",
+          "RightName": "GenericAll",
+          "IsInherited": false
+        }
+      ],
+      "Members": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-1304",
+      "Kind": "User",
+      "Properties": {
+        "name": "DCSYNC@MEGACORP.NET",
+        "displayname": "Legacy Sync Account",
+        "domain": "MEGACORP.NET",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=dcsync,CN=Users,DC=MEGACORP,DC=NET"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-1111111111-2222222222-3333333333-1304",
+          "PrincipalType": "User",
+          "RightName": "DCSync",
+          "IsInherited": false
+        }
+      ],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-3001",
+      "Kind": "Computer",
+      "Properties": {
+        "name": "DC01.MEGACORP.NET",
+        "domain": "MEGACORP.NET",
+        "enabled": true,
+        "distinguishedname": "CN=DC01,OU=Domain Controllers,DC=MEGACORP,DC=NET",
+        "unconstraineddelegation": false,
+        "operatingsystem": "Windows Server 2022"
+      },
+      "Aces": [],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-3002",
+      "Kind": "Computer",
+      "Properties": {
+        "name": "WORKSTATION01.MEGACORP.NET",
+        "domain": "MEGACORP.NET",
+        "enabled": true,
+        "distinguishedname": "CN=WORKSTATION01,CN=Computers,DC=MEGACORP,DC=NET",
+        "unconstraineddelegation": false,
+        "operatingsystem": "Windows 10 Enterprise",
+        "haslaps": false
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-1111111111-2222222222-3333333333-1302",
+          "PrincipalType": "User",
+          "RightName": "AddMember",
+          "IsInherited": false
+        }
+      ],
+      "AllowedToDelegate": [],
+      "LocalAdmins": [
+        {
+          "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-1301",
+          "ObjectType": "User"
+        }
+      ]
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-1110",
+      "Kind": "Group",
+      "Properties": {
+        "name": "SERVER OPERATORS@MEGACORP.NET",
+        "domain": "MEGACORP.NET",
+        "admincount": true,
+        "distinguishedname": "CN=Server Operators,CN=Builtin,DC=MEGACORP,DC=NET"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-1111111111-2222222222-3333333333-1301",
+          "PrincipalType": "User",
+          "RightName": "AddMember",
+          "IsInherited": false
+        }
+      ],
+      "Members": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-1305",
+      "Kind": "User",
+      "Properties": {
+        "name": "GPOOWNER@MEGACORP.NET",
+        "displayname": "GPO Owner Account",
+        "domain": "MEGACORP.NET",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=gpoowner,CN=Users,DC=MEGACORP,DC=NET"
+      },
+      "Aces": [],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-1111111111-2222222222-3333333333-2001",
+      "Kind": "GPO",
+      "Properties": {
+        "name": "DEFAULT DOMAIN POLICY@MEGACORP.NET",
+        "domain": "MEGACORP.NET",
+        "distinguishedname": "CN={31B2F340-016D-11D2-945F-00C04FB984F9},CN=Policies,CN=System,DC=MEGACORP,DC=NET",
+        "gpcpath": "\\\\megacorp.net\\SysVol\\megacorp.net\\Policies\\{31B2F340-016D-11D2-945F-00C04FB984F9}"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-1111111111-2222222222-3333333333-1305",
+          "PrincipalType": "User",
+          "RightName": "WriteOwner",
+          "IsInherited": false
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "type": "sessions",
+    "count": 12,
+    "version": 5
+  }
+}

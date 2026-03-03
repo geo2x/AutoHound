@@ -1,0 +1,183 @@
+{
+  "data": [
+    {
+      "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-500",
+      "Kind": "User",
+      "Properties": {
+        "name": "ADMINISTRATOR@CONTOSO.COM",
+        "displayname": "Administrator",
+        "domain": "CONTOSO.COM",
+        "enabled": true,
+        "admincount": true,
+        "distinguishedname": "CN=Administrator,CN=Users,DC=CONTOSO,DC=COM"
+      },
+      "Aces": [],
+      "AllowedToDelegate": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-512",
+      "Kind": "Group",
+      "Properties": {
+        "name": "DOMAIN ADMINS@CONTOSO.COM",
+        "domain": "CONTOSO.COM",
+        "admincount": true,
+        "distinguishedname": "CN=Domain Admins,CN=Users,DC=CONTOSO,DC=COM"
+      },
+      "Aces": [],
+      "Members": [
+        {
+          "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-500",
+          "ObjectType": "User"
+        }
+      ]
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-2001",
+      "Kind": "Computer",
+      "Properties": {
+        "name": "WEB01.CONTOSO.COM",
+        "domain": "CONTOSO.COM",
+        "enabled": true,
+        "distinguishedname": "CN=WEB01,CN=Computers,DC=CONTOSO,DC=COM",
+        "unconstraineddelegation": true,
+        "operatingsystem": "Windows Server 2016",
+        "serviceprincipalnames": [
+          "HTTP/web01.contoso.com",
+          "HTTP/web01"
+        ]
+      },
+      "Aces": [],
+      "AllowedToDelegate": [
+        "ldap/dc01.contoso.com",
+        "cifs/dc01.contoso.com"
+      ],
+      "AllowedToAct": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-2002",
+      "Kind": "Computer",
+      "Properties": {
+        "name": "DC01.CONTOSO.COM",
+        "domain": "CONTOSO.COM",
+        "enabled": true,
+        "distinguishedname": "CN=DC01,OU=Domain Controllers,DC=CONTOSO,DC=COM",
+        "unconstraineddelegation": false,
+        "operatingsystem": "Windows Server 2019"
+      },
+      "Aces": [],
+      "AllowedToDelegate": [],
+      "AllowedToAct": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-1201",
+      "Kind": "User",
+      "Properties": {
+        "name": "HELPDESK@CONTOSO.COM",
+        "displayname": "Helpdesk Account",
+        "domain": "CONTOSO.COM",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=helpdesk,CN=Users,DC=CONTOSO,DC=COM"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-9876543210-1234567890-5555555555-1201",
+          "PrincipalType": "User",
+          "RightName": "WriteOwner",
+          "IsInherited": false
+        }
+      ],
+      "AllowedToDelegate": [],
+      "SPNTargets": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-2003",
+      "Kind": "Computer",
+      "Properties": {
+        "name": "APP01.CONTOSO.COM",
+        "domain": "CONTOSO.COM",
+        "enabled": true,
+        "distinguishedname": "CN=APP01,CN=Computers,DC=CONTOSO,DC=COM",
+        "unconstraineddelegation": false,
+        "operatingsystem": "Windows Server 2019",
+        "allowedtodelegate": [
+          "cifs/dc01.contoso.com"
+        ]
+      },
+      "Aces": [],
+      "AllowedToDelegate": [
+        "cifs/dc01.contoso.com"
+      ],
+      "AllowedToAct": [
+        {
+          "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-2001",
+          "ObjectType": "Computer"
+        }
+      ]
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-1202",
+      "Kind": "User",
+      "Properties": {
+        "name": "BACKUPADMIN@CONTOSO.COM",
+        "displayname": "Backup Administrator",
+        "domain": "CONTOSO.COM",
+        "enabled": true,
+        "admincount": false,
+        "distinguishedname": "CN=backupadmin,CN=Users,DC=CONTOSO,DC=COM"
+      },
+      "Aces": [],
+      "AllowedToDelegate": [],
+      "SPNTargets": [],
+      "HasSIDHistory": []
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-1108",
+      "Kind": "Group",
+      "Properties": {
+        "name": "BACKUP OPERATORS@CONTOSO.COM",
+        "domain": "CONTOSO.COM",
+        "admincount": true,
+        "distinguishedname": "CN=Backup Operators,CN=Builtin,DC=CONTOSO,DC=COM"
+      },
+      "Aces": [],
+      "Members": [
+        {
+          "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-1202",
+          "ObjectType": "User"
+        }
+      ]
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-9876543210-1234567890-5555555555-1203",
+      "Kind": "User",
+      "Properties": {
+        "name": "SVCACCOUNT@CONTOSO.COM",
+        "displayname": "Generic Service Account",
+        "domain": "CONTOSO.COM",
+        "enabled": true,
+        "admincount": false,
+        "hasspn": true,
+        "serviceprincipalnames": [
+          "HTTP/app01.contoso.com"
+        ],
+        "distinguishedname": "CN=svcaccount,CN=Users,DC=CONTOSO,DC=COM"
+      },
+      "Aces": [
+        {
+          "PrincipalSID": "S-1-5-21-9876543210-1234567890-5555555555-1201",
+          "PrincipalType": "User",
+          "RightName": "GenericAll",
+          "IsInherited": false
+        }
+      ],
+      "AllowedToDelegate": [],
+      "SPNTargets": []
+    }
+  ],
+  "meta": {
+    "type": "sessions",
+    "count": 9,
+    "version": 5
+  }
+}
