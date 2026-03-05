@@ -33,7 +33,7 @@ def test_cli_version():
     result = runner.invoke(main, ['--version'])
     
     assert result.exit_code == 0
-    assert '0.1.0' in result.output
+    assert '1.0.3' in result.output
 
 
 def test_cli_missing_input():

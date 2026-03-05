@@ -10,7 +10,6 @@ for visualization of techniques used in discovered attack paths.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Set
 
 from autohound.models import AttackPath
 
@@ -19,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class AttackNavigatorGenerator:
     """Generate ATT&CK Navigator layer files."""
-    
+
     LAYER_TEMPLATE = {
         "name": "AutoHound Attack Paths",
         "versions": {
@@ -60,28 +59,28 @@ class AttackNavigatorGenerator:
         "selectTechniquesAcrossLevels": True,
         "selectSubtechniquesWithParent": False
     }
-    
-    def __init__(self, attack_paths: List[AttackPath]):
+
+    def __init__(self, attack_paths: list[AttackPath]):
         """
         Initialize navigator generator.
-        
+
         Args:
             attack_paths: Attack paths to visualize
         """
         self.attack_paths = attack_paths
-    
+
     def generate(self, output_path: Path) -> None:
         """
         Generate ATT&CK Navigator layer JSON file.
-        
+
         Args:
             output_path: File path for the layer file
         """
         logger.info(f"Generating ATT&CK Navigator layer: {output_path}")
-        
+
         # Collect all techniques from paths
         techniques = self._collect_techniques()
-        
+
         # Build layer
         layer = self.LAYER_TEMPLATE.copy()
         layer["techniques"] = techniques
@@ -95,26 +94,26 @@ class AttackNavigatorGenerator:
                 "value": str(len(self.attack_paths))
             }
         ]
-        
+
         # Write to file
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(layer, f, indent=2)
-        
+
         logger.info(f"ATT&CK Navigator layer generated: {output_path}")
-    
-    def _collect_techniques(self) -> List[Dict]:
+
+    def _collect_techniques(self) -> list[dict]:
         """Collect and aggregate techniques from all paths."""
         # Track techniques and their scores
-        technique_data: Dict[str, Dict] = {}
-        
+        technique_data: dict[str, dict] = {}
+
         for path in self.attack_paths:
             for step in path.steps:
                 if not step.attack_technique_id:
                     continue
-                
+
                 tech_id = step.attack_technique_id
-                
+
                 if tech_id not in technique_data:
                     technique_data[tech_id] = {
                         "techniqueID": tech_id,
@@ -132,12 +131,12 @@ class AttackNavigatorGenerator:
                     if path.overall_score > technique_data[tech_id]["score"]:
                         technique_data[tech_id]["score"] = path.overall_score
                         technique_data[tech_id]["color"] = self._score_to_color(path.overall_score)
-                    
+
                     # Append to comment
                     technique_data[tech_id]["comment"] += f"\n- {path.name}"
-        
+
         return list(technique_data.values())
-    
+
     def _score_to_color(self, score: float) -> str:
         """Map overall score to color."""
         if score >= 80:

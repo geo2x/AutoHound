@@ -10,10 +10,11 @@ to verify logic and generate commands.
 import json
 import logging
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from anthropic import Anthropic
 
+from autohound.constants import LLM_GRAPH_CONTEXT_TRUNCATION, LLM_MAX_CONTEXT_CHARS, LLM_MAX_TOKENS
 from autohound.models import AttackPath, AttackStep, EdgeType
 
 logger = logging.getLogger(__name__)
@@ -21,8 +22,9 @@ logger = logging.getLogger(__name__)
 
 class LLMEngine:
     """LLM-powered attack path reasoning engine."""
-    
-    DISCOVERY_SYSTEM_PROMPT = """You are an expert red team operator analyzing Active Directory environments.
+
+    DISCOVERY_SYSTEM_PROMPT = (
+        """You are an expert red team operator analyzing Active Directory environments.
 
 Your task is to identify novel, high-value attack paths from the BloodHound data provided.
 
@@ -61,8 +63,10 @@ Return a JSON array of attack paths. Each path must include:
 }
 
 Be creative. Look for paths that require 3-5 hops through unexpected objects."""
-    
-    VALIDATION_SYSTEM_PROMPT = """You are an expert red team operator validating and enriching attack paths.
+    )
+
+    VALIDATION_SYSTEM_PROMPT = (
+        """You are an expert red team operator validating and enriching attack paths.
 
 Your task is to take the attack path and:
 1. Verify the logical consistency of each step
@@ -93,21 +97,31 @@ Return the enriched path in the same JSON format with added fields:
 - attack_tactic, attack_technique_id, attack_technique_name per step
 - event_ids, sigma_rule, detection_notes per step
 - remediation per step"""
-    
-    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
+    )
+
+    def __init__(
+        self,
+        api_key: str | None = None,
+        model: str | None = None,
+        max_context_chars: int = LLM_MAX_CONTEXT_CHARS,
+    ):
         """
         Initialize LLM engine.
-        
+
         Args:
             api_key: Anthropic API key (defaults to ANTHROPIC_API_KEY env var)
             model: Claude model to use (if None, auto-detects best available)
+            max_context_chars: Maximum characters per API call (triggers chunking if exceeded)
         """
         self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
         if not self.api_key:
-            raise ValueError("Anthropic API key required. Set ANTHROPIC_API_KEY environment variable.")
-        
+            raise ValueError(
+                "Anthropic API key required. Set ANTHROPIC_API_KEY environment variable."
+            )
+
         self.client = Anthropic(api_key=self.api_key)
-        
+        self.max_context_chars = max_context_chars
+
         # Auto-detect best available model if not specified
         if model:
             self.model = model
@@ -115,11 +129,11 @@ Return the enriched path in the same JSON format with added fields:
         else:
             self.model = self._detect_best_model()
             logger.info(f"Auto-detected model: {self.model}")
-    
+
     def _detect_best_model(self) -> str:
         """
         Detect the best available Claude model by querying Anthropic API.
-        
+
         Returns:
             Model ID of the best available model
         """
@@ -127,10 +141,10 @@ Return the enriched path in the same JSON format with added fields:
             # Fetch all models available to this API key right now
             models = self.client.models.list()
             available = [m.id for m in models.data]
-            
+
             if not available:
                 raise ValueError("no models returned from API")
-            
+
             # Score models by capability — higher is better
             def score(model_id: str) -> int:
                 m = model_id.lower()
@@ -160,36 +174,46 @@ Return the enriched path in the same JSON format with added fields:
                 if version:
                     score_val += int(version[0]) * 25
                 return score_val
-            
+
             best = max(available, key=score)
             print(f"[autohound] available models: {available}")
             print(f"[autohound] selected: {best}")
             return best
-            
+
         except Exception as e:
             print(f"[autohound] model detection failed: {e}")
             print("[autohound] falling back to claude-3-haiku-20240307")
             return "claude-3-haiku-20240307"
-    
-    def discover_paths(self, graph_description: str) -> List[AttackPath]:
+
+    def discover_paths(self, graph_description: str) -> list[AttackPath]:
         """
         Discovery pass: identify attack paths from graph description.
-        
+
         Args:
             graph_description: Serialized graph text
-        
+
         Returns:
             List of discovered attack paths
         """
         logger.info("Starting attack path discovery pass...")
-        
-        prompt_content = f"Analyze this Active Directory environment and identify attack paths:\n\n{graph_description}"
+
+        # Check if we need to chunk the graph description
+        if len(graph_description) > self.max_context_chars:
+            logger.warning(
+                f"Graph too large ({len(graph_description)} chars), splitting into chunks"
+            )
+            return self._discover_paths_chunked(graph_description)
+
+        prompt_content = (
+            f"Analyze this Active Directory environment and identify attack paths:\n\n"
+            f"{graph_description}"
+        )
         logger.debug(f"Full prompt length: {len(prompt_content)} characters")
-        
+
         try:
             response = self.client.messages.create(
                 model=self.model,
-                max_tokens=4096,
+                max_tokens=LLM_MAX_TOKENS,
                 temperature=0.3,  # Some creativity, but not too random
                 system=self.DISCOVERY_SYSTEM_PROMPT,
                 messages=[
@@ -199,100 +223,168 @@ Return the enriched path in the same JSON format with added fields:
                     }
                 ]
             )
-            
+
             # Extract JSON from response
-            response_text = response.content[0].text
+            first_block = response.content[0]
+            if not hasattr(first_block, 'text'):
+                raise ValueError("Unexpected response format from LLM")
+            response_text = first_block.text
             logger.debug(f"LLM discovery response: {response_text[:500]}...")
-            
+
             # Parse JSON
             paths_data = self._extract_json(response_text)
-            
+
+            if paths_data is None:
+                raise ValueError(
+                    "LLM response did not contain valid JSON. "
+                    "Run with --log-level DEBUG for details."
+                )
+
             if not paths_data:
                 logger.warning("No attack paths discovered")
                 return []
-            
+
             # Convert to AttackPath objects
             paths = self._parse_attack_paths(paths_data)
             logger.info(f"Discovered {len(paths)} attack paths")
-            
+
             return paths
-            
+
         except Exception as e:
             logger.error(f"Error during discovery pass: {e}")
             raise
-    
+
+    def _discover_paths_chunked(self, graph_description: str) -> list[AttackPath]:
+        """
+        Discovery pass with chunking for large graphs.
+
+        Args:
+            graph_description: Serialized graph text (too large for single call)
+
+        Returns:
+            Deduplicated list of discovered attack paths
+        """
+
+        # We need to create chunks - for now, do simple text chunking
+        # Ideally the caller would pass a Graph object, but for backward compatibility
+        # we'll do basic text splitting
+        chunks = []
+        chunk_size = self.max_context_chars - 1000  # Leave room for prompt
+
+        current_pos = 0
+        while current_pos < len(graph_description):
+            chunk_end = current_pos + chunk_size
+            if chunk_end < len(graph_description):
+                # Try to break at a newline
+                last_newline = graph_description.rfind('\n', current_pos, chunk_end)
+                if last_newline > current_pos:
+                    chunk_end = last_newline
+
+            chunks.append(graph_description[current_pos:chunk_end])
+            current_pos = chunk_end
+
+        logger.info(f"Split graph into {len(chunks)} chunks for processing")
+
+        # Process each chunk
+        all_paths = []
+        for i, chunk in enumerate(chunks):
+            logger.info(f"Processing chunk {i+1}/{len(chunks)}")
+            try:
+                chunk_paths = self.discover_paths(chunk)  # Recursive call with smaller chunk
+                all_paths.extend(chunk_paths)
+            except Exception as e:
+                logger.error(f"Error processing chunk {i+1}: {e}")
+                continue
+
+        # Deduplicate by path_id
+        seen_ids = set()
+        unique_paths = []
+        for path in all_paths:
+            if path.path_id not in seen_ids:
+                seen_ids.add(path.path_id)
+                unique_paths.append(path)
+
+        logger.info(f"Discovered {len(unique_paths)} unique paths across {len(chunks)} chunks")
+        return unique_paths
+
     def enrich_path(self, path: AttackPath, graph_description: str) -> AttackPath:
         """
         Validation/enrichment pass: add commands, ATT&CK mapping, detection.
-        
+
         Args:
             path: Attack path from discovery
             graph_description: Original graph for context
-        
+
         Returns:
             Enriched attack path with commands and defensive guidance
         """
         logger.info(f"Enriching path: {path.name}")
-        
+
         # Serialize path to JSON for LLM
         path_json = self._path_to_json(path)
-        
+
         try:
             response = self.client.messages.create(
                 model=self.model,
-                max_tokens=4096,
+                max_tokens=LLM_MAX_TOKENS,
                 temperature=0.0,  # No creativity, exact commands needed
                 system=self.VALIDATION_SYSTEM_PROMPT,
                 messages=[
                     {
                         "role": "user",
-                        "content": f"""Enrich this attack path with commands, ATT&CK mapping, and detection guidance:
+                        "content": (
+                            f"""Enrich this attack path with commands, ATT&CK mapping, """
+                            f"""and detection guidance:
 
 Attack Path:
 {path_json}
 
 Graph Context (for reference):
-{graph_description[:5000]}"""
+{self._truncate_context(graph_description, LLM_GRAPH_CONTEXT_TRUNCATION)}"""
+                        )
                     }
                 ]
             )
-            
-            response_text = response.content[0].text
+
+            first_block = response.content[0]
+            if not hasattr(first_block, 'text'):
+                raise ValueError("Unexpected response format from LLM")
+            response_text = first_block.text
             logger.debug(f"LLM enrichment response: {response_text[:500]}...")
-            
+
             # Parse enriched path
             enriched_data = self._extract_json(response_text)
-            
+
             if enriched_data:
                 enriched_path = self._parse_attack_paths([enriched_data])[0]
                 # Recalculate overall score
                 enriched_path.calculate_overall_score()
                 return enriched_path
             else:
-                logger.warning("Failed to parse enriched path, returning original")
+                logger.warning(f"Failed to parse enriched path for {path.name}, returning original")
                 return path
-                
+
         except Exception as e:
             logger.error(f"Error during enrichment pass: {e}")
             return path  # Return original if enrichment fails
-    
-    def analyze(self, graph_description: str) -> List[AttackPath]:
+
+    def analyze(self, graph_description: str) -> list[AttackPath]:
         """
         Complete analysis: discovery + enrichment.
-        
+
         Args:
             graph_description: Serialized graph text
-        
+
         Returns:
             List of fully enriched attack paths
         """
         # Discovery pass
         discovered_paths = self.discover_paths(graph_description)
-        
+
         if not discovered_paths:
             logger.warning("No paths discovered, analysis complete")
             return []
-        
+
         # Enrichment pass for each path
         enriched_paths = []
         for path in discovered_paths:
@@ -303,21 +395,21 @@ Graph Context (for reference):
                 logger.error(f"Failed to enrich path {path.name}: {e}")
                 # Include original path even if enrichment fails
                 enriched_paths.append(path)
-        
+
         # Sort by overall score
         enriched_paths.sort(key=lambda p: p.overall_score, reverse=True)
-        
+
         logger.info(f"Analysis complete: {len(enriched_paths)} paths identified and enriched")
         return enriched_paths
-    
-    def _extract_json(self, text: str) -> Optional[Any]:
+
+    def _extract_json(self, text: str) -> Any | None:
         """Extract JSON from LLM response (handles markdown code blocks)."""
         # Try direct parse first
         try:
             return json.loads(text)
         except json.JSONDecodeError:
             pass
-        
+
         # Look for JSON in markdown code blocks
         if "```json" in text:
             start = text.find("```json") + 7
@@ -327,30 +419,52 @@ Graph Context (for reference):
                 return json.loads(json_text)
             except json.JSONDecodeError:
                 pass
-        
-        # Look for JSON array or object
+
+        # Look for JSON array or object - try to extract just the JSON portion
         for start_char in ['{', '[']:
             if start_char in text:
                 start = text.find(start_char)
-                # Find matching end
+                # Try to find matching closing bracket
+                end_char = '}' if start_char == '{' else ']'
+                depth = 0
+                end = -1
+
+                for i in range(start, len(text)):
+                    if text[i] == start_char:
+                        depth += 1
+                    elif text[i] == end_char:
+                        depth -= 1
+                        if depth == 0:
+                            end = i + 1
+                            break
+
+                if end > start:
+                    try:
+                        json_text = text[start:end]
+                        return json.loads(json_text)
+                    except json.JSONDecodeError:
+                        pass
+
+                # Fallback: try parsing from start to end of string
                 try:
                     json_text = text[start:]
                     return json.loads(json_text)
                 except json.JSONDecodeError:
                     pass
-        
-        logger.error("Failed to extract JSON from LLM response")
+
+        # Log preview of response for debugging
+        logger.error(f"Failed to extract JSON from LLM response. Response preview: {text[:500]}")
         return None
-    
-    def _parse_attack_paths(self, paths_data: Any) -> List[AttackPath]:
+
+    def _parse_attack_paths(self, paths_data: Any) -> list[AttackPath]:
         """Parse JSON data into AttackPath objects."""
         if isinstance(paths_data, dict):
             paths_data = [paths_data]
-        
+
         if not isinstance(paths_data, list):
             logger.error(f"Expected list of paths, got {type(paths_data)}")
             return []
-        
+
         paths = []
         for path_dict in paths_data:
             try:
@@ -366,7 +480,7 @@ Graph Context (for reference):
                     prerequisites=path_dict.get("prerequisites", []),
                     notes=path_dict.get("notes"),
                 )
-                
+
                 # Parse steps
                 for step_dict in path_dict.get("steps", []):
                     step = AttackStep(
@@ -385,16 +499,28 @@ Graph Context (for reference):
                         remediation=step_dict.get("remediation"),
                     )
                     path.steps.append(step)
-                
+
                 path.calculate_overall_score()
                 paths.append(path)
-                
+
             except Exception as e:
                 logger.error(f"Failed to parse attack path: {e}")
                 continue
-        
+
         return paths
-    
+
+    def _truncate_context(self, text: str, max_chars: int) -> str:
+        """Truncate text at newline boundary to avoid cutting mid-sentence."""
+        if len(text) <= max_chars:
+            return text
+
+        truncated = text[:max_chars]
+        last_newline = truncated.rfind('\n')
+        if last_newline > 0:
+            truncated = truncated[:last_newline]
+
+        return truncated
+
     def _parse_edge_type(self, edge_str: str) -> EdgeType:
         """Parse edge type string to enum."""
         try:
@@ -405,7 +531,7 @@ Graph Context (for reference):
                 if et.value.lower() == edge_str.lower():
                     return et
             return EdgeType.UNKNOWN
-    
+
     def _path_to_json(self, path: AttackPath) -> str:
         """Convert AttackPath to JSON string."""
         path_dict = {

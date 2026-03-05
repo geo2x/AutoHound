@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "type": "azurehound",
+    "version": 4,
+    "count": 15
+  },
+  "data": [
+    {
+      "Properties": {
+        "name": "TESTUSER@TESTDOMAIN.LOCAL",
+        "objectid": "S-1-5-21-1234567890-1234567890-1234567890-1001",
+        "enabled": true,
+        "domain": "TESTDOMAIN.LOCAL"
+      },
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-1001",
+      "IsDeleted": false,
+      "IsACLProtected": false,
+      "Aces": [],
+      "Kind": "User"
+    },
+    {
+      "Properties": {
+        "name": "ADMIN@TESTDOMAIN.LOCAL",
+        "objectid": "S-1-5-21-1234567890-1234567890-1234567890-1002",
+        "enabled": true,
+        "domain": "TESTDOMAIN.LOCAL",
+        "admincount": true
+      },
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-1002",
+      "IsDeleted": false,
+      "IsACLProtected": false,
+      "Aces": [],
+      "Kind": "User"
+    },
+    {
+      "Properties": {
+        "name": "TESTCOMPUTER.TESTDOMAIN.LOCAL",
+        "objectid": "S-1-5-21-1234567890-1234567890-1234567890-2001",
+        "enabled": true,
+        "domain": "TESTDOMAIN.LOCAL"
+      },
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-2001",
+      "IsDeleted": false,
+      "IsACLProtected": false,
+      "Aces": [],
+      "Kind": "Computer"
+    },
+    {
+      "Properties": {
+        "name": "DC01.TESTDOMAIN.LOCAL",
+        "objectid": "S-1-5-21-1234567890-1234567890-1234567890-2002",
+        "enabled": true,
+        "domain": "TESTDOMAIN.LOCAL"
+      },
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-2002",
+      "IsDeleted": false,
+      "IsACLProtected": false,
+      "Aces": [],
+      "Kind": "Computer"
+    },
+    {
+      "Properties": {
+        "name": "DOMAIN ADMINS@TESTDOMAIN.LOCAL",
+        "objectid": "S-1-5-21-1234567890-1234567890-1234567890-512",
+        "domain": "TESTDOMAIN.LOCAL",
+        "admincount": true
+      },
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-512",
+      "IsDeleted": false,
+      "IsACLProtected": false,
+      "Aces": [],
+      "Kind": "Group"
+    },
+    {
+      "Properties": {
+        "name": "IT ADMINS@TESTDOMAIN.LOCAL",
+        "objectid": "S-1-5-21-1234567890-1234567890-1234567890-3001",
+        "domain": "TESTDOMAIN.LOCAL"
+      },
+      "ObjectIdentifier": "S-1-5-21-1234567890-1234567890-1234567890-3001",
+      "IsDeleted": false,
+      "IsACLProtected": false,
+      "Aces": [],
+      "Kind": "Group"
+    }
+  ]
+}

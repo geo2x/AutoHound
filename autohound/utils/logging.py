@@ -4,22 +4,21 @@
 
 import logging
 import sys
-from typing import Optional
 
 
-def setup_logging(level: Optional[str] = None) -> None:
+def setup_logging(level: str | None = None) -> None:
     """
     Configure application-wide logging.
-    
+
     Args:
         level: Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     """
     if level is None:
         level = "INFO"
-    
+
     # Convert string to logging level
     numeric_level = getattr(logging, level.upper(), logging.INFO)
-    
+
     # Configure root logger
     logging.basicConfig(
         level=numeric_level,
@@ -29,7 +28,7 @@ def setup_logging(level: Optional[str] = None) -> None:
             logging.StreamHandler(sys.stdout)
         ]
     )
-    
+
     # Set third-party loggers to WARNING to reduce noise
     logging.getLogger("neo4j").setLevel(logging.WARNING)
     logging.getLogger("anthropic").setLevel(logging.WARNING)
