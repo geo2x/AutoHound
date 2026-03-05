@@ -96,3 +96,41 @@ def test_chunking(sample_graph):
     
     assert len(chunks) > 0
     assert all(isinstance(chunk, str) for chunk in chunks)
+
+def test_serializer_include_all_nodes():
+    graph = Graph()
+    for i in range(5):
+        graph.add_node(Node(id=f"n{i}", name=f"Node{i}", node_type=NodeType.USER))
+    
+    serializer = GraphSerializer(graph)
+    text = serializer.serialize_to_text(include_all_nodes=True)
+    assert "All Nodes" in text
+
+
+def test_serializer_no_hvt():
+    graph = Graph()
+    graph.add_node(Node(id="n1", name="NormalUser", node_type=NodeType.USER))
+    
+    serializer = GraphSerializer(graph)
+    text = serializer.serialize_to_text()
+    assert "No high-value targets identified" in text
+
+
+def test_serializer_attack_surface():
+    graph = Graph()
+    comp = Node(id="c1", name="Server1", node_type=NodeType.COMPUTER, properties={"unconstrained_delegation": True})
+    graph.add_node(comp)
+    user = Node(id="u1", name="User1", node_type=NodeType.USER)
+    graph.add_node(user)
+    from autohound.models import Edge
+    graph.add_edge(Edge(source_id="u1", target_id="c1", edge_type=EdgeType.HAS_SESSION))
+    
+    serializer = GraphSerializer(graph)
+    text = serializer.serialize_to_text()
+    assert "Unconstrained Delegation" in text or "Active Sessions" in text
+
+
+def test_init_version():
+    import autohound
+    assert hasattr(autohound, '__version__')
+    assert isinstance(autohound.__version__, str)
