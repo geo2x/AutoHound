@@ -114,3 +114,62 @@ def test_attack_step_creation():
     assert step.sequence == 1
     assert step.edge_type == EdgeType.ADD_MEMBER
     assert len(step.commands) == 1
+
+
+def test_node_hash():
+    """Test Node __hash__ method."""
+    node1 = Node(id="123", name="User1", node_type=NodeType.USER)
+    node2 = Node(id="123", name="User2", node_type=NodeType.USER)
+    
+    # Same ID should have same hash
+    assert hash(node1) == hash(node2)
+    
+    # Can be used in sets/dicts
+    node_set = {node1, node2}
+    assert len(node_set) == 1
+
+
+def test_node_equality_with_non_node():
+    """Test Node equality with non-Node object."""
+    node = Node(id="123", name="User1", node_type=NodeType.USER)
+    
+    assert node != "not a node"
+    assert node != 123
+    assert node != None
+
+
+def test_edge_hash():
+    """Test Edge __hash__ method."""
+    edge1 = Edge(source_id="1", target_id="2", edge_type=EdgeType.ADMIN_TO)
+    edge2 = Edge(source_id="1", target_id="2", edge_type=EdgeType.ADMIN_TO)
+    
+    # Same source, target, type should have same hash
+    assert hash(edge1) == hash(edge2)
+
+
+def test_graph_empty():
+    """Test empty graph."""
+    graph = Graph()
+    
+    assert graph.node_count() == 0
+    assert graph.edge_count() == 0
+    assert graph.get_node("nonexistent") is None
+    assert graph.get_outbound_edges("nonexistent") == []
+    assert graph.get_inbound_edges("nonexistent") == []
+
+
+def test_attack_path_calculate_score():
+    """Test AttackPath score calculation method."""
+    path = AttackPath(
+        path_id="test1",
+        name="Test Path",
+        description="Test",
+        impact_score=100.0,
+        stealth_score=50.0,
+        complexity_score=0.0
+    )
+    
+    path.calculate_overall_score()
+    
+    # Expected: 100*0.4 + 50*0.35 + 0*0.25 = 40 + 17.5 + 0 = 57.5
+    assert abs(path.overall_score - 57.5) < 0.1
