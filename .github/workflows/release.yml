@@ -64,6 +64,8 @@ jobs:
           draft: false
           prerelease: false
           makeLatest: true
+          allowUpdates: true
+          replacesArtifacts: true
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             ## AutoHound ${{ github.ref_name }}
